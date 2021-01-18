@@ -32,7 +32,9 @@
 		    {% endif %}
 			{% if posts.size > 1 %}
 				{% for post in posts %}
-					<a href="{{ site.base-url }}{{ post.url }}" style="text-align: center">{{ site.data.languages[post.lang].icon }} {{ site.data.languages[post.lang].label }}</a>
+                	{% if post.lang != page.lang %}
+						<a href="{{ site.base-url }}{{ post.url }}" style="text-align: center">{{ site.data.languages[post.lang].icon }} {{ site.data.languages[post.lang].label }}</a>
+					{% endif %}
 				{% endfor %}
 	    	{% endif %}
 		{% endif %}
