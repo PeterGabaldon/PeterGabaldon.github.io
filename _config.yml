@@ -7,38 +7,38 @@
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # --------------------------
-title: Chirpy                          # the main title
+title: Peter Gabaldon                          # the main title
 
-tagline: A text-focused Jekyll theme   # it will display as the sub-title
+tagline: Cybersecurity blog.  # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  A minimal, portfolio, sidebar,
-  bootstrap Jekyll theme with responsive web design
-  and focuses on text presentation.
+  Hacking, Security Researching, Pentesting/Ethical Hacking, Operating Systems...
 
-# fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
-url: ''
+# fill in the base hostname & protocol for your site, e.g., 'https://username.github.io'
+url: 'https://petergabaldon.github.io'
 
-author: your_full_name                  # change to your full name
+author: Peter Gabaldon                  # change to your full name
+
+avatar: /assets/img/avatar/Peter_avatar.jpg   # support internet resources
 
 github:
-  username: github_username             # change to your github username
+  username: PeterGabaldon             # change to your github username
 
 twitter:
-  username: twitter_username            # change to your twitter username
+  username: PedroGabaldon            # change to your twitter username
 
 social:
-  name: your_full_name                  # it will shows as the copyright owner in Footer
+  name: Pedro Gabaldon                  # it will shows as the copyright owner in Footer
   email: example@doamin.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/username      # change to your twitter homepage
-    - https://github.com/username       # change to your github homepage
+    - https://twitter.com/PeterGabaldon      # change to your twitter homepage
+    - https://github.com/PeterGabaldon       # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
 
-google_site_verification: google_meta_tag_verification # change to your verification string
+google_site_verification: 'n4hbrMWNSEClBGstZ5tfJRPe9iWSPul3FA1_3mEJFgQ' # change to your verification string
 # --------------------------
 
 
@@ -47,10 +47,10 @@ google_site_verification: google_meta_tag_verification # change to your verifica
 baseurl: ''
 
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
-timezone: Asia/Shanghai
+timezone: Europe/Madrid
 
 google_analytics:
-  id: ''          # Fill with your Google Analytics ID
+  id: 'G-N6LPQ2XQ6P'          # Fill with your Google Analytics ID
   pv:
     # The Google Analytics pageviews switch.
     # DO NOT enable it unless you know how to deploy the Google Analytics superProxy.
@@ -77,17 +77,7 @@ disqus:
 #
 #     dark   - Use the dark color scheme
 #
-theme_mode:   # [light|dark]
-
-# The CDN endpoint for images.
-# Notice that once it is assigned, the CDN url
-# will be added to all image (site avatar & posts' images) paths starting with '/'
-#
-# e.g. 'https://cdn.com'
-img_cdn: ''
-
-# the avatar on sidebar, support local or CORS resources
-avatar: https://cdn.jsdelivr.net/gh/cotes2020/chirpy-images/commons/avatar.jpg
+theme_mode:   # <light|dark>
 
 # boolean type, the global switch for ToC in posts.
 toc: true
@@ -122,7 +112,7 @@ defaults:
       type: posts
     values:
       layout: post
-      comments: true    # Enable comments in posts.
+      comments: false    # Enable comments in posts.
       toc: true         # Display TOC column in posts.
       breadcrumb:
         -
@@ -185,7 +175,7 @@ compress_html:
   profile: false
   blanklines: false
   ignore:
-    envs: [development]
+    envs: []
 
 exclude:
   - vendor
@@ -204,3 +194,11 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+# Custom
+plugins:
+  - jekyll-multiple-languages-plugin
+
+languages: ["en", "es"]
+exclude_from_localizations: ["js", "images", "css"]
+future: false
