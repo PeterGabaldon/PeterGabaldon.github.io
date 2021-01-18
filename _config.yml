@@ -195,3 +195,5 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
+# Custom
+future: false

@@ -24,6 +24,19 @@
         <span>{{ page.title }}</span>
       {% endunless %}
 
+
+		{% if page.layout == 'post' %}
+		    {% assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' %}
+		    {% if posts.size == 0 %}
+		        {% assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' %}
+		    {% endif %}
+			{% if posts.size > 1 %}
+				{% for post in posts %}
+					<a href="{{ site.base-url }}{{ post.url }}" class="align-items-center">{{ site.data.languages[post.lang].icon }} {{ site.data.languages[post.lang].label }}</a>
+				{% endfor %}
+	    	{% endif %}
+		{% endif %}
+
     </span><!-- endof #breadcrumb -->
 
     <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
