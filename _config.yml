@@ -195,10 +195,3 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
-# Custom
-plugins:
-  - jekyll-multiple-languages-plugin
-
-languages: ["en", "es"]
-exclude_from_localizations: ["js", "images", "css"]
-future: false
