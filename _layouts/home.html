@@ -47,50 +47,50 @@ layout: page
 <div id="post-list">
 
 {% for post in posts %}
+  {% if post.lang == page.lang %}
+    <div class="post-preview">
+      <h1>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h1>
 
-  <div class="post-preview">
-    <h1>
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    </h1>
+      <div class="post-content">
+        <p>
+          {% include no-linenos.html content=post.content %}
+          {{ content | markdownify | strip_html | truncate: 200 }}
+        </p>
+      </div>
 
-    <div class="post-content">
-      <p>
-        {% include no-linenos.html content=post.content %}
-        {{ content | markdownify | strip_html | truncate: 200 }}
-      </p>
-    </div>
+      <div class="post-meta text-muted d-flex justify-content-between">
 
-    <div class="post-meta text-muted d-flex justify-content-between">
+        <div>
+          <!-- posted date -->
+          <i class="far fa-calendar fa-fw"></i>
+          {% include timeago.html date=post.date tooltip=true %}
 
-      <div>
-        <!-- posted date -->
-        <i class="far fa-calendar fa-fw"></i>
-        {% include timeago.html date=post.date tooltip=true %}
+          <!-- time to read -->
+          <i class="far fa-clock fa-fw"></i>
+          {% include read-time.html content=post.content %}
 
-        <!-- time to read -->
-        <i class="far fa-clock fa-fw"></i>
-        {% include read-time.html content=post.content %}
+          <!-- page views -->
+          {% if site.google_analytics.pv.enabled %}
+          <i class="far fa-eye fa-fw"></i>
+          <span id="pv_{{-post.title-}}" class="pageviews">
+            <i class="fas fa-spinner fa-spin fa-fw"></i>
+          </span>
+         {% endif %}
+        </div>
 
-        <!-- page views -->
-        {% if site.google_analytics.pv.enabled %}
-        <i class="far fa-eye fa-fw"></i>
-        <span id="pv_{{-post.title-}}" class="pageviews">
-          <i class="fas fa-spinner fa-spin fa-fw"></i>
-        </span>
+        {% if post.pin %}
+        <div class="pin">
+          <i class="fas fa-thumbtack fa-fw"></i>
+          <span>{{ site.data.label.pin_prompt }}</span>
+        </div>
         {% endif %}
-      </div>
 
-      {% if post.pin %}
-      <div class="pin">
-        <i class="fas fa-thumbtack fa-fw"></i>
-        <span>{{ site.data.label.pin_prompt }}</span>
-      </div>
-      {% endif %}
-
-    </div> <!-- .post-meta -->
+      </div> <!-- .post-meta -->
 
   </div> <!-- .post-review -->
-
+  {% endif %}
 {% endfor %}
 
 </div> <!-- #post-list -->
