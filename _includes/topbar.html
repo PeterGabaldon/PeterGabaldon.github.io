@@ -26,6 +26,8 @@
 
     </span><!-- endof #breadcrumb -->
 
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
 	{% if page.layout == 'post' %}
 	    {% assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' %}
 	    {% if posts.size == 0 %}
@@ -39,8 +41,6 @@
 			{% endfor %}
 	   	{% endif %}
 	{% endif %}
-
-    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
 
     <div id="topbar-title">
       {% if page.layout == 'home' %}
