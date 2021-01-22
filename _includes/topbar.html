@@ -24,22 +24,21 @@
         <span>{{ page.title }}</span>
       {% endunless %}
 
-
-		{% if page.layout == 'post' %}
-		    {% assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' %}
-		    {% if posts.size == 0 %}
-		        {% assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' %}
-		    {% endif %}
-			{% if posts.size > 1 %}
-				{% for post in posts %}
-                	{% if post.lang != page.lang %}
-						<a href="{{ site.base-url }}{{ post.url }}" class="justify-content-center">{{ site.data.languages[post.lang].icon }} {{ site.data.languages[post.lang].label }}</a>
-					{% endif %}
-				{% endfor %}
-	    	{% endif %}
-		{% endif %}
-
     </span><!-- endof #breadcrumb -->
+
+	{% if page.layout == 'post' %}
+	    {% assign posts=site.posts | where:"lang-ref", page.lang-ref | sort: 'lang' %}
+	    {% if posts.size == 0 %}
+	        {% assign posts=site.pages | where:"lang-ref", page.lang-ref | sort: 'lang' %}
+	    {% endif %}
+		{% if posts.size > 1 %}
+			{% for post in posts %}
+               	{% if post.lang != page.lang %}
+					<a href="{{ site.base-url }}{{ post.url }}" style="color: rgb(138,180,248)" class="justify-content-center">{{ site.data.languages[post.lang].icon }} {{ site.data.languages[post.lang].label }}</a>
+				{% endif %}
+			{% endfor %}
+	   	{% endif %}
+	{% endif %}
 
     <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
 
