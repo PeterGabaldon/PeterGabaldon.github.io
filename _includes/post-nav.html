@@ -8,7 +8,7 @@
 -->
 
 <div class="post-navigation d-flex justify-content-between">
-  {% if page.previous.url %}
+  {% if page.previous.url and page.previous.lang == page.lang %}
   <a href="{{ site.baseurl }}{{ page.previous.url }}" class="btn btn-outline-primary">
     <p>{{ page.previous.title }}</p>
   </a>
@@ -18,7 +18,7 @@
   </span>
   {% endif %}
 
-  {% if page.next.url %}
+  {% if page.next.url and page.next.lang == page.lang %}
   <a href="{{ site.baseurl }}{{page.next.url}}" class="btn btn-outline-primary">
     <p>{{ page.next.title }}</p>
   </a>
