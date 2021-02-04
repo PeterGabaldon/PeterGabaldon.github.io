@@ -29,14 +29,14 @@ twitter:
 
 social:
   name: Pedro Gabaldon                  # it will shows as the copyright owner in Footer
-  email: example@doamin.com             # change to your email address
+  email:                                # change to your email address
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/PeterGabaldon      # change to your twitter homepage
     - https://github.com/PeterGabaldon       # change to your github homepage
+    - https://www.linkedin.com/in/pedro-gabaldon-julia/
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
 
 google_site_verification: 'n4hbrMWNSEClBGstZ5tfJRPe9iWSPul3FA1_3mEJFgQ' # change to your verification string
 # --------------------------
