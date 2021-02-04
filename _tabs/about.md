@@ -10,5 +10,4 @@ order: 4
 # MIT License
 ---
 
-
-> **Note**: Add Markdown syntax content to file `_tabs/about.md` and it will show up on this page.
+Pedro (a.k.a Peter) Gabaldon is currently studying Computer Science at University of Murcia, independtly and in a self-taught way trying to become a cybersecurity expert.
