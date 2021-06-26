@@ -65,11 +65,11 @@ Inside square brackets we have just section names. We should focus at lines 6-11
 
 # KDC (Key Distribution Center)
 
-The Key Distribution Center is the key part on Kerberos, it is the server that manages authorization itself and generetes the corresponding tickets, Ticket Granting Ticket, or TGT, and Ticket Granting Service, or TGS. Actually we can define de KDC as AS + TGS, i.e, on the one hand it acts as a Authorization Server(AS) checking users know the correct credentials(correct user hash and username) and on the other hand it acts as a Ticket Granting Server, creating and sending tickets.
+The Key Distribution Center is the key part on Kerberos, it is the server that manages authorization itself and generetes the corresponding tickets, Ticket Granting Ticket, or TGT, and Ticket Granting Service, or TGS. Actually we can define de KDC as AS + TGS, i.e, on the one hand it acts as a Authorization Server(AS) checking users present correct credentials and on the other hand it acts as a Ticket Granting Server, creating and sending tickets.
 Imagine you want to access an SMB resource, so Kerberos authentication flow will communicate with de KDC asking for authentication to that service (that is uniquely identified using the Service Principal Name, [SPN](https://docs.microsoft.com/en-us/windows/win32/ad/service-principal-names)). The flow is as follows:
 - The KDC checks credentials, they are OK so the KDC respond back sending the TGT and you are authenticated.
 - Now you need a TGS to present it to the SMB service, you ask the KDC that you want to access that SMB service presening the TGT and because the TGT is correct you are given with a TGS that can be used to authenticate to that service.
-- You then go to the SMB service, present the TGS, the SMB service asks Kerberos and Kerberos says that the TGS is correct so you are now able to access the SMB resources.
+- You then go to the SMB service, present the TGS, the SMB service asks Kerberos and Kerberos says that the TGS is correct so you are now able to access the SMB resources (additionally the PAC can be verified asking the KDC and a response to the user is also optional).
 
 # Tickets
 
