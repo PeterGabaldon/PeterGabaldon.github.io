@@ -224,7 +224,7 @@ The following diagram ilustrates the flow of calculating the response.
 NTLMv2 mitigates some of the frailties of NTLMv1. For example, now the same password and same challenges produce differents responses because of timestamp in "Client challenge 2". This mitigates replay attacks too. Also NTLMv2 is more robusts vs brute force attacks because of using **HMAC-MD5**.
 
 ## Hardening
-You should disable NTLMv1, LM and LM hashes, a modern Windows ecosystem can use just NT hashes and NTLMv2.
+You should disable NTLMv1, LM and LM hashes, a modern Windows ecosystem can use just NT hashes and NTLMv2 (remember LM is enabled by default in Windows XP and Server 2003, versions more recent than them does not come with it enabled by default).
 
 ### Disabling LM hash using group policy:
 * Run secpol.msc
