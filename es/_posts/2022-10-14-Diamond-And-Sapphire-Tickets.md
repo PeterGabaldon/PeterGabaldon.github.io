@@ -2,8 +2,8 @@
 
 layout: post
 title: Diamond And Sapphire Tickets
-lang: en
-lang-ref: diamons-sapphire-tickets
+lang: es
+lang-ref: diamonds-sapphire-tickets
 categories: [Windows security]
 tags: [windows, cybersecurity, kerberos, red team, pentesting]
 
