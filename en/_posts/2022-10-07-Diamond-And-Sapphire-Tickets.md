@@ -254,6 +254,21 @@ Now, blue teamers investigate more and create a Sigma Rule :P
 
 # References:
 
+1. [https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/](https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/)
+2. [https://learn.microsoft.com/es-es/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9](https://learn.microsoft.com/es-es/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9)
+3. [https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/dd302fd1-0aa7-406b-ad91-2a6b35738557](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/dd302fd1-0aa7-406b-ad91-2a6b35738557)
+4. [https://github.com/ShutdownRepo/The-Hacker-Recipes/blob/master/ad/movement/kerberos/forged-tickets/diamond.md](https://github.com/ShutdownRepo/The-Hacker-Recipes/blob/master/ad/movement/kerberos/forged-tickets/diamond.md)
+5. [https://github.com/ShutdownRepo/The-Hacker-Recipes/blob/master/ad/movement/kerberos/forged-tickets/sapphire.md](https://github.com/ShutdownRepo/The-Hacker-Recipes/blob/master/ad/movement/kerberos/forged-tickets/sapphire.md)
+6. [https://github.com/SecureAuthCorp/impacket/pull/1411](https://github.com/SecureAuthCorp/impacket/pull/1411)
+7. [https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L518](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L518)
+8. [https://ppn.snovvcrash.rocks/pentest/infrastructure/ad/kerberos#decrypt-krb5-traffic](https://ppn.snovvcrash.rocks/pentest/infrastructure/ad/kerberos#decrypt-krb5-traffic)
+9. [https://medium.com/tenable-techblog/decrypt-encrypted-stub-data-in-wireshark-deb132c076e7](https://medium.com/tenable-techblog/decrypt-encrypted-stub-data-in-wireshark-deb132c076e7)
+10. [https://www.tarlogic.com/es/blog/como-funciona-kerberos/](https://www.tarlogic.com/es/blog/como-funciona-kerberos/)
+11. [https://www.thehacker.recipes/ad/movement/kerberos](https://www.thehacker.recipes/ad/movement/kerberos)
+12. [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth)
+13. [https://twitter.com/snovvcrash/status/1576640678410432512]( https://twitter.com/snovvcrash/status/1576640678410432512)
+14. [https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-sfu/02636893-7a1f-4357-af9a-b672e3e3de13](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-sfu/02636893-7a1f-4357-af9a-b672e3e3de13)
+15. [https://medium.com/@robert.broeckelmann/kerberos-wireshark-captures-a-windows-login-example-151fabf3375a](https://medium.com/@robert.broeckelmann/kerberos-wireshark-captures-a-windows-login-example-151fabf3375a)
 
 
 
