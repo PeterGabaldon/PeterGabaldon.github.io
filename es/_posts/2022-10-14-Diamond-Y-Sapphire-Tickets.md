@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title: Diamond And Sapphire Tickets
+title: Diamond Y Sapphire Tickets
 lang: es
 lang-ref: diamonds-sapphire-tickets
 categories: [Windows security]
