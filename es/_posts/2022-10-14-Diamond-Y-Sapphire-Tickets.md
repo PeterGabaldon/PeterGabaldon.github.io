@@ -9,7 +9,7 @@ tags: [windows, cybersecurity, kerberos, red team, pentesting]
 
 ---
 
-# Kerberos Diamond and Sapphire Tickets
+# Kerberos Diamond y Sapphire Tickets
 
 Como sabes, uno de los enfoques para la persistencia en un entorno Windows Active Directory son las conocidas técnicas Golden Ticket y Silver Ticket. En post explotación, una vez que se tienen suficientes privilegios en un DC, es posible volcar *ntds.dit* y obtener *krbtgt* Kerberos Keys. Como sabes, sus claves Kerberos se utilizan para cifrar los TGT y firmar los PAC. Entonces, al disponer de las claves de Kerberos, es posible construir cualquier TGT y/o PAC. Tener las claves de Kerberos de algún SPN nos permite falsificar STs para ese servicio.
 
@@ -43,7 +43,7 @@ ticketer.py -request -impersonate 'domainadmin' -domain 'DOMAIN.FQDN' -user 'dom
 
 Se ignorarán los argumentos requeridos *-domain-sid* y el parámetro común de usuario a suplantar.
 
-## Technical Details
+## Detalles Técnicos
 
 Sapphire Tickets se basa en el *trick* S4U2Self + U2U. S4U2Self es uno de los mensajes en la extensión del protocolo S4U. S4U2Self permite obtener un ticket en nombre de otro usuario para sí mismo. Imagina un servicio con *Constrained Delegation* habilitada, pero un usuario se autentica mediante NTLM. El Servicio no puede delegar al usuario a otro servicio porque no tiene el ST del usuario (necesario para realizar S4U2Proxy). En este escenario, el servicio envía al KDC un KRB_TGS_REQ solicitando un ST de ese usuario para si mismo. De modo que, el servicio ahora tiene un ST para sí mismo en nombre del usuario.
 
