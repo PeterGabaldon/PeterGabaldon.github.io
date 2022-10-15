@@ -70,11 +70,13 @@ A diagram about the process.
 
 [![U2U-4](../../assets/img/diamond-sapphire-tickets/u2u_4.png)](../../assets/img/diamond-sapphire-tickets/u2u_4.png){:target="\_blank"}
 
-## Windows World
+But this is the theory defined in Kerberos 5 protocol specification. Take a look at [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth)
+
+### Windows World
 
 [![W-ICON](../../assets/img/diamond-sapphire-tickets/windows_icon.png)](../../assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
-Finally, how is that implementad in Windows? It is a bit different with regard we have explained but easier (in my opinion). In a normal KRB_TGS_REG, insted of indicating a Service Principal Name we register a User Name in the Service Name, *sname*, header. Just it. The KDC will pick user's Kerberos Keys and generate a Service Ticket.
+Finally, how is U2U implementad in Windows? It is a bit different with regard we have explained but easier (in my opinion). In a normal KRB_TGS_REG, insted of indicating a Service Principal Name we register a User Name in the Service Name, *sname*, header. Just it. The KDC will pick user's Kerberos Keys and generate a Service Ticket.
 
 ## S4U2Self
 
@@ -84,7 +86,7 @@ Using *paDATA pA-FOR-USER* we can request S4U2Self.
 
 ## Putting all together
 
-Thus, the idea is: we authenticate in the domain with any account, request S4U2Self, but, we are not a service (I mean, we do not have an SPN). At the Service Name we specify the user that we have use to authenticate, performing U2U. The result is that the KDC will generate a Service Ticket to us on behalft of the user. Now, we have de PAC of the target user :).
+Thus, the idea is: we authenticate in the domain with any account, request S4U2Self, but, we are not a service (I mean, we do not have an SPN). At the Service Name we specify the user that we have use to authenticate, performing U2U. The result is that the KDC will generate a Service Ticket to us on behalft of the user. Now, we have the PAC of the target user :).
 
 ## Practica Example
 
@@ -98,7 +100,7 @@ python3 ./ticketer.py -request -impersonate 'administrator' -domain 'contoso.loc
 
 [![P1](../../assets/img/diamond-sapphire-tickets/prac1.png)](../../assets/img/diamond-sapphire-tickets/prac1.png){:target="\_blank"}
 
-If we take a look at the ticket we can see that we have had a ticket that has de PAC of the request to impersonate, Administrator.
+If we take a look at the ticket we can see that we have had a ticket that has the PAC of the request to impersonate, Administrator.
 
 [![P2-1](../../assets/img/diamond-sapphire-tickets/prac2_1.png)](../../assets/img/diamond-sapphire-tickets/prac2_1.png){:target="\_blank"}
 [![P2-3](../../assets/img/diamond-sapphire-tickets/prac2_2.png)](../../assets/img/diamond-sapphire-tickets/prac2_2.png){:target="\_blank"}

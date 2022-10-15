@@ -70,11 +70,13 @@ Un diagrama sobre el proceso.
 
 [![U2U-4](../../assets/img/diamond-sapphire-tickets/u2u_4.png)](../../assets/img/diamond-sapphire-tickets/u2u_4.png){:target="\_blank"}
 
-## Windows World
+Pero esta es la teoría definida en la especificación de Kerberos 5. Echa un vistazo aquí [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth)
+
+### Windows World
 
 [![W-ICON](../../assets/img/diamond-sapphire-tickets/windows_icon.png)](../../assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
-Finalmente, ¿cómo se implementa esto en Windows? Es un poco diferente con respecto a lo que hemos explicado pero más fácil (en mi opinión). En un KRB_TGS_REG normal, en lugar de indicar un *Service Principal Name*, se indica un nombre de usuario en la cabezera Service Name, *sname*. Ya esta. El KDC seleccionará las claves Kerberos del usuario y generará un ticket de servicio acorde.
+Finalmente, ¿cómo se implementa U2U en Windows? Es un poco diferente con respecto a lo que hemos explicado pero más fácil (en mi opinión). En un KRB_TGS_REG normal, en lugar de indicar un *Service Principal Name*, se indica un nombre de usuario en la cabezera Service Name, *sname*. Ya esta. El KDC seleccionará las claves Kerberos del usuario y generará un ticket de servicio acorde.
 
 ## S4U2Self
 
