@@ -174,11 +174,11 @@ Additionally, some flags are always set: Forwadable, Proxiable, Renewable, Pre-A
                         checksum['Signature'] = '\x00' * 12
                     else:
                         checksum['Signature'] = '\x00' * 16
-                    **pacInfos[infoBuffer['ulType']] = checksum.getData()**
+                    pacInfos[infoBuffer['ulType']] = checksum.getData()
                 else:
-                    **pacInfos[infoBuffer['ulType']] = data**
+                    pacInfos[infoBuffer['ulType']] = data
 [...]
-**newFlags = [TicketFlags.forwardable.value, TicketFlags.proxiable.value, TicketFlags.renewable.value, TicketFlags.pre_authent.value]**
+newFlags = [TicketFlags.forwardable.value, TicketFlags.proxiable.value, TicketFlags.renewable.value, TicketFlags.pre_authent.value]
 [...]
 else:
             encTicketPart = EncTicketPart()
