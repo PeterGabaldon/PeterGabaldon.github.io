@@ -45,7 +45,7 @@ Required arguments *-domain-sid* and (common) impersonate user param will be ign
 
 ## Technical Details
 
-Sapphire Tickets is based in the S4U2Self + U2U trick. S4U2Self is the one of the messages in the S4U protocol extension. S4U2Self allows to obtainer a ticket in behalf of another user to itself. Imagino a service with Kerberos Constrained Delegation Enabled, but a user authenticates to it using NTLM. The Service cannot delegate the user to another service because it does not have the ST of the user. In that scenario, the service send to the KDC a KRB_TGS_REQ requesting a ST of that user to itself. So, the service now has a ST to itself with the user authentication information.
+Sapphire Tickets technique is based in the S4U2Self + U2U trick. Using U2U is possible to request S4U2Self without having a SPN. S4U2Self is one of the messages in the S4U protocol extension. S4U2Self allows to obtainer a ticket in behalf of another user to itself. Imagine a service with Kerberos Constrained Delegation Enabled, but a user authenticates to it using NTLM. The Service cannot delegate the user to another service because it does not have the ST of the user. In that scenario, the service send to the KDC a KRB_TGS_REQ requesting a ST of that user to itself. So, the service now has a ST to itself with the user authentication information.
 
 So the idea is: We request S4U2Self, getting ST to us as if the user has authenticated versus us. This ST has the user's PAC. So, we have his PAC because we can decrypt it using *krbtgt* Kerberos keys. We can now modify the PAC of and existing TGT and re-encrypt and re-sign it with *krbtgt* Kerberos keys. The idea is that simple.
 
@@ -80,7 +80,7 @@ Finally, how is U2U implementad in Windows? It is a bit different with regard we
 
 ## S4U2Self
 
-In the S4U Kerberos Extension of Windows, S4U2Self permits a service getting a Service Ticket to itself on behalf of the user. Basically, that is a Service Ticket as is the user would have authenticated to the service requesting S4U2Self. To request S4U2Self the account has to have at least one Service Principal Name.
+In the S4U Kerberos Extension, S4U2Self permits a service getting a Service Ticket to itself on behalf of the user. Basically, that is a Service Ticket as is the user would have authenticated to the service requesting S4U2Self. To request S4U2Self the account has to have at least one Service Principal Name.
 
 Using *paDATA pA-FOR-USER* we can request S4U2Self.
 
