@@ -88,7 +88,7 @@ Usando *paDATA pA-FOR-USER* podemos solicitar S4U2Self.
 
 Entonces, la idea es: nos autenticamos en el dominio con cualquier cuenta, solicitamos S4U2Self, pero no somos un servicio (es decir, no tenemos un SPN). En el Nombre del Servicio especificamos el usuario que vamos a usar para autenticar, realizando U2U. El resultado es que el KDC generará un ticket de servicio para nosotros en nombre del usuario. Ahora, tenemos el PAC del usuario objetivo :).
 
-## Ejemplo Práctio
+## Ejemplo Práctico
 
 Estamos en la fase de post y tenemos las claves Kerberos (krbtgt).
 
