@@ -45,7 +45,7 @@ Se ignorarán los argumentos requeridos *-domain-sid* y el parámetro común de 
 
 ## Detalles Técnicos
 
-Sapphire Tickets se basa en el *trick* S4U2Self + U2U. S4U2Self es uno de los mensajes en la extensión del protocolo S4U. S4U2Self permite obtener un ticket en nombre de otro usuario para sí mismo. Imagina un servicio con *Constrained Delegation* habilitada, pero un usuario se autentica mediante NTLM. El Servicio no puede delegar al usuario a otro servicio porque no tiene el ST del usuario (necesario para realizar S4U2Proxy). En este escenario, el servicio envía al KDC un KRB_TGS_REQ solicitando un ST de ese usuario para si mismo. De modo que, el servicio ahora tiene un ST para sí mismo en nombre del usuario.
+Sapphire Tickets se basa en el *trick* S4U2Self + U2U. Usando U2U es posible solicitar S4U2Self sin tener un SPN. S4U2Self es uno de los mensajes en la extensión del protocolo S4U. S4U2Self permite obtener un ticket en nombre de otro usuario para sí mismo. Imagina un servicio con *Constrained Delegation* habilitada, pero un usuario se autentica mediante NTLM. El Servicio no puede delegar al usuario a otro servicio porque no tiene el ST del usuario (necesario para realizar S4U2Proxy). En este escenario, el servicio envía al KDC un KRB_TGS_REQ solicitando un ST de ese usuario para si mismo. De modo que, el servicio ahora tiene un ST para sí mismo en nombre del usuario.
 
 Entonces, la idea es: solicitamos S4U2Self, obteniendo un ST como si el usuario se hubiera autenticado contra nosotros. Este ST tiene el PAC del usuario. Entonces, disponemos de su PAC porque podemos descifrarlo usando las claves Kerberos *krbtgt*. Ahora podemos modificar el PAC de un TGT existente y volver a cifrarlo y volver a firmarlo con las claves Kerberos *krbtgt*. La idea es así de simple.
 
@@ -103,7 +103,7 @@ Usando *paDATA pA-FOR-USER* podemos solicitar S4U2Self.
 
 Entonces, la idea es: nos autenticamos en el dominio con cualquier cuenta, solicitamos S4U2Self, pero no somos un servicio (es decir, no tenemos un SPN). En el Nombre del Servicio especificamos el usuario que vamos a usar para autenticar, realizando U2U. El resultado es que el KDC generará un ticket de servicio para nosotros en nombre del usuario. Ahora, tenemos el PAC del usuario objetivo :).
 
-## Ejemplo Práctio
+## Ejemplo Práctico
 
 Estamos en la fase de post y tenemos las claves Kerberos (krbtgt).
 
@@ -189,11 +189,11 @@ Además, algunas banderas siempre están configuradas: Forwadable, Proxiable, Re
                         checksum['Signature'] = '\x00' * 12
                     else:
                         checksum['Signature'] = '\x00' * 16
-                    **pacInfos[infoBuffer['ulType']] = checksum.getData()**
+                    pacInfos[infoBuffer['ulType']] = checksum.getData()
                 else:
-                    **pacInfos[infoBuffer['ulType']] = data**
+                    pacInfos[infoBuffer['ulType']] = data
 [...]
-**newFlags = [TicketFlags.forwardable.value, TicketFlags.proxiable.value, TicketFlags.renewable.value, TicketFlags.pre_authent.value]**
+newFlags = [TicketFlags.forwardable.value, TicketFlags.proxiable.value, TicketFlags.renewable.value, TicketFlags.pre_authent.value]
 [...]
 else:
             encTicketPart = EncTicketPart()
