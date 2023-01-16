@@ -51,7 +51,7 @@ Entonces, la idea es: solicitamos S4U2Self, obteniendo un ST como si el usuario 
 
 ## U2U
 
-Imagina que un usuario quiere ofrecer algún servicio en su Máquina de Escritorio. Debido a que no es una máquina servidor, debemos presuponer que está más expuesta, por ejemplo, a ataques de red, no está bastionada, etc. En definitiva, deberíamos considerarla menos segura. Dado ese escenario, la especificación Kerberos 5 trajo una nueva idea. Básicamente, U2U ofrece al usuario la posibilidad de alojar un servicio sin ser realmente un servicio o tener un Principal, por lo que no tiene la responsabilidad de almacenar una clave maestra de larga duración. De esa forma, el KDC es nuevamente responsable de almacenar las claves "maestras" y el usuario puede entregar el servicio deseado. La idea es que dos usuarios puedan autenticarse y obtener una clave de sesión común.
+Imaginemos que un usuario quiere ofrecer algún servicio en su Máquina de Escritorio. Debido a que no es una máquina servidor, debemos presuponer que está más expuesta, por ejemplo, a ataques de red, no está bastionada, etc. En definitiva, deberíamos considerarla menos segura y que no puede almacenar una clave de servicio. Dado ese escenario, la especificación Kerberos 5 trajo una nueva idea. Básicamente, U2U ofrece al usuario la posibilidad de alojar un servicio sin ser realmente un servicio o tener un Principal, por lo que no tiene la responsabilidad de almacenar una clave maestra de larga duración. De esa forma, el KDC es nuevamente responsable de almacenar las claves "maestras" y el usuario puede entregar el servicio deseado. La idea es que dos usuarios puedan autenticarse y obtener una clave de sesión común.
 
 Digamos que hay dos usuarios: el usuario A, que actúa como servidor, y el usuario B, que actúa como cliente.
 
@@ -70,13 +70,28 @@ Un diagrama sobre el proceso.
 
 [![U2U-4](../../assets/img/diamond-sapphire-tickets/u2u_4.png)](../../assets/img/diamond-sapphire-tickets/u2u_4.png){:target="\_blank"}
 
-Pero esta es la teoría definida en la especificación de Kerberos 5. Echa un vistazo aquí [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth)
+Pero esta es la teoría definida en la especificación de Kerberos 5. Echa un vistazo aquí [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth).
+
+**En resumen**, en lugar de especificar un SPN, indicamos al KDC que utilice la Clave de Sesión de un Usuario. Para ello, embebemos su TGT y especificamos su Name en el Service Name.
 
 ### Windows World
 
+Por último, ¿cómo se implementa U2U (al menos) en Windows? No he probado otras implementaciones.
+
 [![W-ICON](../../assets/img/diamond-sapphire-tickets/windows_icon.png)](../../assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
-Finalmente, ¿cómo se implementa U2U en Windows? Es un poco diferente con respecto a lo que hemos explicado pero más fácil (en mi opinión). En un KRB_TGS_REG normal, en lugar de indicar un *Service Principal Name*, se indica un nombre de usuario en la cabezera Service Name, *sname*. Ya esta. El KDC seleccionará las claves Kerberos del usuario y generará un ticket de servicio acorde.
+La implementación, como se define aquí [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01) especifica que la opción **ENC-TKT-IN-SKEY** tiene que ser especificada y un ticket adicional tiene que ser incluido en el TGS-REQ.
+
+Un ejemplo que muestra esto a nivel de red:
+
+[![P4](../../assets/img/diamond-sapphire-tickets/prac4.png)](../../assets/img/diamond-sapphire-tickets/prac4.png){:target="\_blank"}
+
+Podemos echar un vistazo a la modificación de *ticketer.py* de [Charlie Shutdown](https://twitter.com/_nwodtuhs) para ver cómo se incluye esta opción y el ticket adicional.
+
+Líneas 491 y 507.
+
+[https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L491](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L491)
+[https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L507](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L507)
 
 ## S4U2Self
 
