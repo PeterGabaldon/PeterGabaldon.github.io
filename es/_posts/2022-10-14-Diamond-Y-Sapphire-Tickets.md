@@ -74,19 +74,19 @@ Pero esta es la teoría definida en la especificación de Kerberos 5. Echa un vi
 
 **En resumen**, en lugar de especificar un SPN, indicamos al KDC que utilice la Clave de Sesión de un Usuario. Para ello, embebemos su TGT y especificamos su Name en el Service Name.
 
-### Windows World
+### Windows Implementation
 
 Por último, ¿cómo se implementa U2U (al menos) en Windows? No he probado otras implementaciones.
 
 [![W-ICON](../../assets/img/diamond-sapphire-tickets/windows_icon.png)](../../assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
-La implementación, como se define aquí [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01) especifica que la opción **ENC-TKT-IN-SKEY** tiene que ser especificada y un ticket adicional tiene que ser incluido en el TGS-REQ.
+La implementación, como se define aquí [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01), especifica que la opción **ENC-TKT-IN-SKEY** tiene que ser especificada y un ticket adicional tiene que ser incluido en el TGS-REQ.
 
 Un ejemplo que muestra esto a nivel de red:
 
 [![P4](../../assets/img/diamond-sapphire-tickets/prac4.png)](../../assets/img/diamond-sapphire-tickets/prac4.png){:target="\_blank"}
 
-Podemos echar un vistazo a la modificación de *ticketer.py* de [Charlie Shutdown](https://twitter.com/_nwodtuhs) para ver cómo se incluye esta opción y el ticket adicional.
+Podemos echar un vistazo a la modificación de *ticketer.py* de [Charlie Shutdown](https://twitter.com/_nwodtuhs), para ver cómo se incluye esta opción y el ticket adicional.
 
 Líneas 491 y 507.
 

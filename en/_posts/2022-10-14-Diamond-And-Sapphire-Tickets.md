@@ -74,19 +74,19 @@ But this is the theory defined in Kerberos 5 protocol specification. Take a look
 
 **To summarize**, instead of specifying an SPN, we indicate the KDC to use the Session Key of a User. For that, we embed his TGT and spcify its Name in the Service Name.
 
-### Windows World
+### Windows Implementation
 
 Finally, how is U2U implementad (at least) in Windows? I have not tested another implementations.
 
 [![W-ICON](../../assets/img/diamond-sapphire-tickets/windows_icon.png)](../../assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
-The implementation, as defined here [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01) specifies that the option **ENC-TKT-IN-SKEY** has to be specified and an additional ticket has to be included in the TGS-REQ.
+The implementation, as defined here [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01), specifies that the option **ENC-TKT-IN-SKEY** has to be specified and an additional ticket has to be included in the TGS-REQ.
 
 An example showing this at network level:
 
 [![P4](../../assets/img/diamond-sapphire-tickets/prac4.png)](../../assets/img/diamond-sapphire-tickets/prac4.png){:target="\_blank"}
 
-We can take a look at the modified version of *ticketer.py* by [Charlie Shutdown](https://twitter.com/_nwodtuhs) to see how this option and the additional ticket is included.
+We can take a look at the modified version of *ticketer.py* by [Charlie Shutdown](https://twitter.com/_nwodtuhs), to see how this option and the additional ticket is included.
 
 Lines 491 and 507.
 
