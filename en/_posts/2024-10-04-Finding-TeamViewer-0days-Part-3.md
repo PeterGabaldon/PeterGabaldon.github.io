@@ -40,7 +40,7 @@ We will start by defining the structures of the IPC messages involved.
 We will use it to send the necessary messages over the sockets using the TV IPC protocol. 
 
 We also will need the MD5 implementation, which I will skip. I have also used the following *hpp* for hexadecimal output printing.
-- https://github.com/zmb3/hexdump/blob/master/Hexdump.hpp
+- [https://github.com/zmb3/hexdump/blob/master/Hexdump.hpp](https://github.com/zmb3/hexdump/blob/master/Hexdump.hpp){:target="_blank"}
 
 First of all, we will start connecting to the socket.
 
@@ -98,7 +98,7 @@ Then we are ready to send the magic :).
 ## Elevating to Kernel
 
 At first I thought that we could use the INF to create an arbitrary service running as SYSTEM and elevate privileges that way. But the helper program of TV ends calling `UpdateDriverForPlugAndPlayDevicesA` without verification of the signature (*Catalog File*).
-- https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa
+- [https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa](https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa){:target="_blank"}
 
 This function updates the INF for an existing hardware based on the hardware ID. I have not found a way to perform the arbitrary service creation. Nevertheless, here is and example INF file. 
 
@@ -154,10 +154,10 @@ DiskName="Example Installation Disk"
 ```
 
 It is necessary to generate the *CAT* with *makecat*.
-- https://learn.microsoft.com/en-us/windows/win32/seccrypto/makecat
+- [https://learn.microsoft.com/en-us/windows/win32/seccrypto/makecat](https://learn.microsoft.com/en-us/windows/win32/seccrypto/makecat){:target="_blank"}
 
 Finally, I ended up using a easier approach. Let's use *BYOVD, Bring You Own Vulnerable Driver* with the tool  *BYOVDKit*:
-- https://github.com/Hagrid29/BYOVDKit
+- [https://github.com/Hagrid29/BYOVDKit](https://github.com/Hagrid29/BYOVDKit){:target="_blank"}
 
 I just re-used the same INF and CAT of original TeamViewer but replace *teamviewervpn.sys* with the driver we want to load and rename or copy the original *INF*, in this case *AnotherThingg.inf.
 

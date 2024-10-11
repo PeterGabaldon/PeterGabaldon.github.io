@@ -75,7 +75,7 @@ Notice last line, where it is possible to observer that a helper binary is being
 ```
 
 Interesting, a SYSTEM process is being created that installs the driver given an *INF* file. This process ends calling `UpdateDriverForPlugAndPlayDevicesA` without verification of the signature (*Catalog File*).
-- https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa
+- [https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa](https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa){:target="_blank"}
 
 [![](../../assets/img/finding-tv-0days-1/Pasted image 20240617225325.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617225325.png){:target="_blank"}
 [![](../../assets/img/finding-tv-0days-1/Pasted image 20240617225340.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617225340.png){:target="_blank"}
