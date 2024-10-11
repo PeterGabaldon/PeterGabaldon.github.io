@@ -11,11 +11,11 @@ tags: [windows, cybersecurity, azure, microsoft, red team, pentesting]
 
 # Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating
 
-In this short blog post we will see a trick/technique to enumerate an Azure environment when the User App Consent Workflow is blocked and it is necessary to request permission to an administrator. After the administrator approves the consent the the user can user the application.
+In this short blog post we will see a trick/technique to enumerate an Azure environment when the User App Consent Workflow is blocked and it is necessary to request permission to an administrator. After the administrator approves the consent the user can user the application.
 
 When this mode is set an we attempt to enumerate groups/users/anything else when Microsoft Graph or similar we will get a prompt to request an administrator to approve our use of the application. 
 
-With this technique we leverage Microsoft well-known apps that has some permissions by default. Because they already has some permissions granted we can take advantage of that to get a token with the scopes we want, for example *Group.Read.All* [https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadall](https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadall) to enumerate groups.
+With this technique we leverage Microsoft well-known apps that has some permissions by default. Because they already has some permissions granted we can take advantage of them to get a token with the scopes we want, for example, *Group.Read.All* [https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadall](https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadall).
 
 ## The Idea
 
@@ -27,7 +27,7 @@ When you try to enumerate groups, users, and other elements with Microsoft Graph
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png){:target="_blank"}
 
-# Abusing well-known Microsoft Apps with permissions already granted
+## Abusing well-known Microsoft Apps with permissions already granted
 
 However, it's possible to leverage other default Microsoft applications, such as **SharePoint Online Web Client Extensibility** (08e18876-6177-487e-b8b5-cf950c1e598c), since it has certain permissions granted by default. It has the default permissions that can be seen in the following image. I think that there are other applications available, but I have been using **SharePoint Online Web Client Extensibility**. 
 
@@ -35,7 +35,7 @@ However, it's possible to leverage other default Microsoft applications, such as
 
 Take a look at your tenant and you will find this application owned by Microsoft and with the permissions shown granted.
 
-We can then request a token using this application and requesting, for example, *https://graph.microsoft.com/.default* scope.
+We can then issue a token using this application and request, for example, *https://graph.microsoft.com/.default* scope.
 
 Here is an example request and response.
 
@@ -95,3 +95,5 @@ PS C:\> Get-MgContext | select -ExpandProperty Scopes
 ```
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png){:target="_blank"}
+
+And in this way, we can now continue with the enumeration tasks 😜.
