@@ -106,7 +106,7 @@ To connect to Microsoft Graph with using a token issued using **Azure PowerShell
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png){:target="_blank"}
 
-The avaivle scope is shown in the figure below.
+The available scope is shown in the figure below.
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png){:target="_blank"}
 
