@@ -96,4 +96,19 @@ PS C:\> Get-MgContext | select -ExpandProperty Scopes
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png){:target="_blank"}
 
+## Using Azure PowerShell
+
+Another possibility, thanks to Bene ([https://x.com/m0lto_bene](https://x.com/m0lto_bene)), who pointed this out on Twitter: [https://x.com/PedroGabaldon/status/1844817792891039907](https://x.com/PedroGabaldon/status/1844817792891039907), is using **Azure PowerShell** [1950a258-227b-4e31-a9cf-717495945fc2](https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/governance/verify-first-party-apps-sign-in#application-ids-of-commonly-used-microsoft-applications).
+
+Using this application you can also obtain a Microsoft Graph token. Although, the scope is lesser than when using **SharePoint Online Web Client Extensibility**.
+
+To connect to Microsoft Graph with using a token issued using **Azure PowerShell** just run `Connect-AzAccount; Connect-MgGraph -AccessToken (Get-AzAccessToken -ResourceTypeName MSGraph -AsSecureString).Token`. 
+
+[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png){:target="_blank"}
+
+The avaivle scope is shown in the figure below.
+
+[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png){:target="_blank"}
+
+
 And in this way, we can now continue with the enumeration tasks 😜.
