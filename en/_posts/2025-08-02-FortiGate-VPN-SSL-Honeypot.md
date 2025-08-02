@@ -12,7 +12,7 @@ tags: [honeypot, vpn, fortigate, intelligence]
 # FortiGate VPN-SSL Honeypot
 
 The following blog post contains an example of running and configuring the FortiGate VPN-SSL Honeypot project. This project can be found in Github here:
-- https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot
+- [https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot](https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot)
 
 # Description and Capabilities
 
@@ -44,7 +44,7 @@ So, in order to start running the Honeypot ensure you have installed `Docker`. A
 
 ```shell
 # 1. Clone & build
-$ git clone https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot.git
+$ git clone [https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot.git](https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot.git)
 $ cd Fortigate.VPN-SSL.Honeypot-main
 
 # 2. Generate TLS material (one‑off)
@@ -422,7 +422,7 @@ honeypot:
 
 Here is an example of a malicious IP being reported.
 
-- https://www.virustotal.com/gui/ip-address/23.234.94.233/community
+- [https://www.virustotal.com/gui/ip-address/23.234.94.233/community](https://www.virustotal.com/gui/ip-address/23.234.94.233/community)
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png){:target="_blank"}
 
@@ -447,7 +447,7 @@ honeypot:
 
 And here you can find an example of the Pulse.
 
-- https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2
+- [https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2](https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2)
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png){:target="_blank"}
 
@@ -534,13 +534,13 @@ For example, I exfiltrated fake credentials in a Pastebin post and some days aft
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png){:target="_blank"}
 # Symlink Exploit Detections
 
-The Honeypot also detects attempt to use the Symlink persistence method in FortiGate units (https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).
+The Honeypot also detects attempt to use the Symlink persistence method in FortiGate units ([https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).](https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).)
 
 Unfortunately, as this is not public yet it has been removed. Showing the detection approach would shows also how to exploit it.
 
 For example, https://www.onyphe.io/ scans the internet finding vulnerable appliances and they were caught by the Honeypot. I am sorry but the detection of these attempts has is not available in the public version of the Honeypot. Maybe some day.
 
-- https://x.com/PedroGabaldon/status/1937439245482000793
+- [https://x.com/PedroGabaldon/status/1937439245482000793](https://x.com/PedroGabaldon/status/1937439245482000793)
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png){:target="_blank"}
 
