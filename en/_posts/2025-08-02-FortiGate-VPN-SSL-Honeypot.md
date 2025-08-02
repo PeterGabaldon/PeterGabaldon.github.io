@@ -32,7 +32,7 @@ The Honeypot has the following capabilities currently implemented.
 |🌐**Report to OTX**|Posts new bad IPs to AlienVault OTX pulses|
 |🔍**Report to VT**|Down‑votes & comments IPs on VirusTotal|
 |🙈**Counter‑intel**|Flags any password present in `exfiltrated_passwords.txt` used for counter ingelligence. Deliberately exfiltrate credentials and detect attempts to use them.|
-|~~⚠️**Symlink exploit detection**~~|~~Catches symlink exploit attempts. For example, `/lang/custom/sbin/init`~~. Unfortunately, as this is not public yet it has been removed. Showing the detection approach would shows also how to exploit it.|
+|~~⚠️**Symlink exploit detection**~~|~~Catches symlink exploit attempts~~. Unfortunately, as this is not public yet it has been removed. Showing the detection approach would shows also how to exploit it.|
 The following sections will show an example of running the Honeypot in a cloud server among its capabilities.
 
 # Installation and Running the Honey
@@ -349,6 +349,7 @@ Dumping IPs exploiting Symlink Persistence Method to bad_ips_symlink.txt
 ```
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png){:target="_blank"}
+
 # Scheduled Reporting
 
 I recommend you to configure a service and a timer in `systemd` to periodically parse the information gathered at the Honeypot. The repository contains a template for it. Here is the one that I am using.
@@ -385,8 +386,7 @@ One important reminder, as the Honey run as root inside the container.
 
 > **ACL Fix**: the logs are written as `root` (inside the container). Allow the service user write access in order to the parser script (parse.sh) to be able to clear the logs:
 > 
-> ```
-```shell
+> ```shell
 $ sudo setfacl -m u:fortihoney:rw data/log/honey/creds.log data/log/nginx/access.log
 > ```
 
