@@ -33,6 +33,7 @@ The Honeypot has the following capabilities currently implemented.
 |🔍**Report to VT**|Down‑votes & comments IPs on VirusTotal|
 |🙈**Counter‑intel**|Flags any password present in `exfiltrated_passwords.txt` used for counter ingelligence. Deliberately exfiltrate credentials and detect attempts to use them.|
 |~~⚠️**Symlink exploit detection**~~|~~Catches symlink exploit attempts~~. Unfortunately, as this is not public yet it has been removed. Showing the detection approach would shows also how to exploit it.|
+
 The following sections will show an example of running the Honeypot in a cloud server among its capabilities.
 
 # Installation and Running the Honey
