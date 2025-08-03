@@ -261,18 +261,18 @@ Number of times each username was seen
 
 Number of times each password was seen
 -----------------------
-1       zramirez
-1       ybryant
-1       wpierce
+1       z[***]z
+1       y[***]t
+1       w[***]e
 1       W[***]1         
-1       uking
-1       tstephens
+1       u[***]g
+1       t[***]s
 1       T[***]4         
 1       T[***]1         
 1       s[***]t         
-1       sromero
+1       s[***]o
 2       s[***]1         
-1       simon
+1       s[***]n
 1       p[***]n         
 1       P[***]0         
 1       p[***]d         
