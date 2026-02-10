@@ -1,0 +1,675 @@
+<!DOCTYPE html><html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="theme" content="Chirpy v2.7.2"><meta name="generator" content="Jekyll v4.2.0" /><meta property="og:title" content="FortiGate VPN-SSL Honeypot" /><meta name="author" content="Peter Gabaldon" /><meta property="og:locale" content="en" /><meta name="description" content="FortiGate VPN-SSL Honeypot" /><meta property="og:description" content="FortiGate VPN-SSL Honeypot" /><link rel="canonical" href="https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/" /><meta property="og:url" content="https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/" /><meta property="og:site_name" content="Peter Gabaldon" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2025-08-02T00:00:00+02:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="FortiGate VPN-SSL Honeypot" /><meta name="twitter:site" content="@PedroGabaldon" /><meta name="twitter:creator" content="@Peter Gabaldon" /><meta name="google-site-verification" content="n4hbrMWNSEClBGstZ5tfJRPe9iWSPul3FA1_3mEJFgQ" /> <script type="application/ld+json"> {"author":{"@type":"Person","name":"Peter Gabaldon"},"description":"FortiGate VPN-SSL Honeypot","url":"https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/","@type":"BlogPosting","headline":"FortiGate VPN-SSL Honeypot","dateModified":"2025-08-03T19:00:19+02:00","datePublished":"2025-08-02T00:00:00+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/"},"@context":"https://schema.org"}</script><title>FortiGate VPN-SSL Honeypot | Peter Gabaldon</title><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon.png"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon-precomposed.png"><link rel="apple-touch-icon" sizes="57x57" href="/assets/img/favicons/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/favicons/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicons/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/assets/img/favicons/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicons/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/img/favicons/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/assets/img/favicons/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/favicons/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/manifest.json"><meta name='msapplication-config' content='/assets/img/favicons/browserconfig.xml'><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/assets/img/favicons/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="cdn.jsdelivr.net"><link rel="dns-prefetch" href="cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha256-LA89z+k9fjgMKQ/kq4OO2Mrf8VltYml/VES+Rg0fh20=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous"><link rel="preload" href="/assets/css/post.css" as="style"><link rel="stylesheet" href="/assets/css/post.css"><link rel="preload" as="style" href="/assets/css/lib/bootstrap-toc.min.css"><link rel="stylesheet" href="/assets/css/lib/bootstrap-toc.min.css" /> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script async src="/assets/js/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-N6LPQ2XQ6P"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-N6LPQ2XQ6P'); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/avatar/Peter_avatar.jpg" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Peter Gabaldon</a></div><div class="site-subtitle font-italic">Cybersecurity blog.</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/tabs/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tabs/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/tabs/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/tabs/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/PeterGabaldon" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/PedroGabaldon" aria-label="twitter" class="order-4" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['',''].join('@')" aria-label="email" class="order-5" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-6" > <i class="fas fa-rss"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>FortiGate VPN-SSL Honeypot</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><p>&nbsp;&nbsp;&nbsp;</p><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>FortiGate VPN-SSL Honeypot</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Sat, Aug 2, 2025, 12:00 AM +0200" > Aug 2, 2025 <i class="unloaded">2025-08-02T00:00:00+02:00</i> </span> by <span class="author"> Peter Gabaldon </span></div><div> <span> Updated <span class="timeago lastmod" data-toggle="tooltip" data-placement="bottom" title="Sun, Aug 3, 2025, 7:00 PM +0200" > Aug 3, 2025 <i class="unloaded">2025-08-03T19:00:19+02:00</i> </span> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="2150 words">11 min</span></div></div><div class="post-content"><h1 id="fortigate-vpn-ssl-honeypot">FortiGate VPN-SSL Honeypot</h1><p>The following blog post contains an example of running and configuring the FortiGate VPN-SSL Honeypot project. This project can be found in Github here:</p><ul><li><a href="https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot">https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot</a></ul><h1 id="description-and-capabilities">Description and Capabilities</h1><p>A <strong>deception honeypot</strong> that mimics FortiGate VPN-SSL devices to trap brute force attempts, detect deliberately exfiltrated credentials for counter‑intelligence, and report malicious activity to external intelligence feeds (VT, OTX).</p><ul><li><strong>Python &amp; Flask</strong> for login portal.<li><strong>Nginx</strong> fronts the portal with TLS.<li><strong>Docker</strong> environment via <code class="language-plaintext highlighter-rouge">docker compose</code>.<li><strong>SQLite</strong> stores raw telemetry (creds &amp; symlink‑exploit probes).<li>A suite of helper scripts automate parsing, reporting, and alerting.</ul><p>The Honeypot has the following capabilities currently implemented.</p><div class="table-wrapper"><table><thead><tr><th>🚩Feature<th>Description<tbody><tr><td>📧<strong>Report to email</strong><td>HTML dashboard with summary of Honeypot traps<tr><td>🌐<strong>Report to OTX</strong><td>Posts new bad IPs to AlienVault OTX pulses<tr><td>🔍<strong>Report to VT</strong><td>Down‑votes &amp; comments IPs on VirusTotal<tr><td>🙈<strong>Counter‑intel</strong><td>Flags any password present in <code class="language-plaintext highlighter-rouge">exfiltrated_passwords.txt</code> used for counter ingelligence. Deliberately exfiltrate credentials and detect attempts to use them.<tr><td><del>⚠️<strong>Symlink exploit detection</strong></del><td><del>Catches symlink exploit attempts</del>. Unfortunately, as this is not public yet it has been removed. Showing the detection approach would shows also how to exploit it.</table></div><p>The following sections will show an example of running the Honeypot in a cloud server among its capabilities.</p><h1 id="installation-and-running-the-honey">Installation and Running the Honey</h1><p>The Honeypot is written in Python and built around <code class="language-plaintext highlighter-rouge">docker-compose</code>.</p><p>So, in order to start running the Honeypot ensure you have installed <code class="language-plaintext highlighter-rouge">Docker</code>. After that, it can be run running these commands.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="c"># 1. Clone &amp; build</span>
+<span class="nv">$ </span>git clone <span class="o">[</span>https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot.git]<span class="o">(</span>https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot.git<span class="o">)</span>
+<span class="nv">$ </span><span class="nb">cd </span>Fortigate.VPN-SSL.Honeypot-main
+
+<span class="c"># 2. Generate TLS material (one‑off)</span>
+<span class="nv">$ </span>./nginx/dist/conf/ssl/gen-cert.sh
+<span class="nv">$ </span>./nginx/dist/conf/ssl/gen-dhparam.sh 2048
+
+<span class="c"># 3. Run with docker compose</span>
+<span class="nv">$ </span>docker compose up <span class="c"># 🔥 boots nginx &amp; honeypot</span>
+
+<span class="c"># 4. Parse logs &amp; load SQLite</span>
+<span class="nv">$ </span>./parse.sh   <span class="c"># ➜ data/db/honeypot.db gets populated</span>
+</pre></table></code></div></div><p>Before running the Honeypot, it is necessary to generate the DH params and certificate configured in <em>nginx</em>.</p><p>If you want to modify some parameters about the certificate, edit <code class="language-plaintext highlighter-rouge">./nginx/dist/conf/ssl/gen-cert.sh</code>. By default the certificate generated will use the following information:</p><ul><li>emailAddress=support@fortinet.com<li>CN=FGT61FTZ24061580<li>OU=FortiGate<li>O=Fortinet<li>L=Sunnyvale<li>ST=California<li>C=US</ul><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cat</span> ./nginx/dist/conf/ssl/gen-cert.sh
+<span class="c">#! /bin/bash</span>
+
+/usr/bin/openssl req <span class="nt">-subj</span> <span class="s1">'/C=US/ST=California/L=Sunnyvale/O=Fortinet/OU=FortiGate/CN=FGT61FTZ24061580/emailAddress=support@fortinet.com/'</span> <span class="nt">-nodes</span> <span class="nt">-x509</span> <span class="nt">-sha512</span> <span class="nt">-newkey</span> rsa:8192 <span class="nt">-keyout</span> <span class="s2">"nginx.key"</span> <span class="nt">-out</span> <span class="s2">"nginx.crt"</span> <span class="nt">-days</span> 3650
+</pre></table></code></div></div><p>After that, run <code class="language-plaintext highlighter-rouge">docker compose up</code> and the Honeypot will be up and reachable from port <code class="language-plaintext highlighter-rouge">10443</code>. Modify <code class="language-plaintext highlighter-rouge">nginx/dist/conf/honey.conf</code> if want to run it in another port.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cat </span>nginx/dist/conf/honey.conf
+<span class="c">############################################</span>
+<span class="c">### NGINX T-Pot configuration file by mo ###</span>
+<span class="c">############################################</span>
+
+server <span class="o">{</span>
+
+    <span class="c">#########################</span>
+    <span class="c">### Basic server settings</span>
+    <span class="c">#########################</span>
+    listen 10443 ssl http2<span class="p">;</span>
+    <span class="o">[</span>...]
+</pre></table></code></div></div><p>After that, the Honey will be accessible.</p><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170818.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170818.png" alt="" /></a></p><p>Just for your information, once it is published to internet, in a few days it will appea in internet service mappers like <code class="language-plaintext highlighter-rouge">Shodan</code> or <code class="language-plaintext highlighter-rouge">Censys</code>.</p><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170920.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170920.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png" alt="" /></a></p><h1 id="parsing">Parsing</h1><p>Honeypot data is logged at <code class="language-plaintext highlighter-rouge">data/log/honey/creds.log</code> and nginx data is logged at <code class="language-plaintext highlighter-rouge">data/log/nginx/access.log</code>.</p><p>Here is an example of information captured by the Honey, with the credentials redacted.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+</pre><td class="rouge-code"><pre>trainee T[<span class="k">***</span><span class="o">]</span>4 185.213.193.234 2025-07-31T15:00:18.385476+00:00
+sromero s[<span class="k">***</span><span class="o">]</span>o 91.92.34.11 2025-07-31T15:00:44.028099+00:00
+ke 1[<span class="k">***</span><span class="o">]</span>8 167.160.161.193 2025-07-31T15:00:49.098469+00:00
+he P[<span class="k">***</span><span class="o">]</span>d 167.160.161.216 2025-07-31T15:01:02.217613+00:00
+fausto F[<span class="k">***</span><span class="o">]</span>3 23.234.70.149 2025-07-31T15:01:05.474080+00:00
+nkennedy n[<span class="k">***</span><span class="o">]</span>y 107.174.46.11 2025-07-31T15:01:19.092927+00:00
+ke 1[<span class="k">***</span><span class="o">]</span>8 167.160.161.193 2025-07-31T15:01:22.168543+00:00
+isreal i[<span class="k">***</span><span class="o">]</span>2 43.225.189.151 2025-07-31T15:01:33.667071+00:00
+he P[<span class="k">***</span><span class="o">]</span>d 167.160.161.216 2025-07-31T15:01:35.845423+00:00
+amy W[<span class="k">***</span><span class="o">]</span>1 23.234.117.79 2025-07-31T15:01:44.388001+00:00
+sqluser s[<span class="k">***</span><span class="o">]</span>1 43.225.189.170 2025-07-31T15:02:53.167762+00:00
+intranet p[<span class="k">***</span><span class="o">]</span>d 23.234.68.230 2025-07-31T15:02:55.229870+00:00
+pferguson p[<span class="k">***</span><span class="o">]</span>n 104.168.80.13 2025-07-31T15:03:05.072113+00:00
+report %[<span class="k">***</span><span class="o">]</span>x 68.235.46.88 2025-07-31T15:04:32.869353+00:00
+uking u[<span class="k">***</span><span class="o">]</span>g 94.26.88.5 2025-07-31T15:04:45.977357+00:00
+ladams l[<span class="k">***</span><span class="o">]</span>s 198.23.161.10 2025-07-31T15:04:46.027902+00:00
+teresa T[<span class="k">***</span><span class="o">]</span>1 23.234.114.197 2025-07-31T15:04:50.948803+00:00
+tstephens t[<span class="k">***</span><span class="o">]</span>s 94.26.88.3 2025-07-31T15:05:36.710669+00:00
+kf 1[<span class="k">***</span><span class="o">]</span>8 167.160.161.193 2025-07-31T15:06:09.337948+00:00
+jolson j[<span class="k">***</span><span class="o">]</span>n 198.23.161.3 2025-07-31T15:06:14.681890+00:00
+hf P[<span class="k">***</span><span class="o">]</span>d 167.160.161.216 2025-07-31T15:06:36.153136+00:00
+kf 1[<span class="k">***</span><span class="o">]</span>8 167.160.161.193 2025-07-31T15:06:42.417378+00:00
+aaron a[<span class="k">***</span><span class="o">]</span>1 149.40.50.116 2025-07-31T15:06:47.697336+00:00
+hf P[<span class="k">***</span><span class="o">]</span>d 167.160.161.216 2025-07-31T15:07:09.860109+00:00
+wpierce w[<span class="k">***</span><span class="o">]</span>e 94.26.105.3 2025-07-31T15:07:32.213667+00:00
+elong e[<span class="k">***</span><span class="o">]</span>g 192.109.138.9 2025-07-31T15:08:21.726254+00:00
+ybryant y[<span class="k">***</span><span class="o">]</span>t 94.26.105.8 2025-07-31T15:08:26.972756+00:00
+oromero o[<span class="k">***</span><span class="o">]</span>o 104.168.80.3 2025-07-31T15:08:45.380433+00:00
+isreal i[<span class="k">***</span><span class="o">]</span>2 43.225.189.151 2025-07-31T15:08:47.140009+00:00
+scans P[<span class="k">***</span><span class="o">]</span>0 68.235.46.145 2025-07-31T15:09:05.908442+00:00
+simon s[<span class="k">***</span><span class="o">]</span>n 45.134.142.222 2025-07-31T15:10:19.605062+00:00
+oallen o[<span class="k">***</span><span class="o">]</span>n 104.168.80.9 2025-07-31T15:10:20.994895+00:00
+sqluser s[<span class="k">***</span><span class="o">]</span>1 43.225.189.170 2025-07-31T15:10:34.016648+00:00
+landon l[<span class="k">***</span><span class="o">]</span>3 146.70.165.70 2025-07-31T15:11:13.777620+00:00
+kg 1[<span class="k">***</span><span class="o">]</span>8 167.160.161.193 2025-07-31T15:11:35.171434+00:00
+</pre></table></code></div></div><p>The Honeypot contains a <code class="language-plaintext highlighter-rouge">parse</code> script that parses the information and stores it in an <code class="language-plaintext highlighter-rouge">sqlite</code> database. Also, the results of the parsing is showed by the output of the script. It will also produce a JSON with the results.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>bash parse.sh
+Number of username/password <span class="nb">test </span>by IP
+<span class="nt">-----------------------</span>
+1       94.26.88.5
+1       94.26.88.3
+1       94.26.105.8
+1       94.26.105.3
+1       94.26.105.11
+1       91.92.34.11
+1       68.235.46.88
+1       68.235.46.145
+1       45.134.142.222
+2       43.225.189.170
+2       43.225.189.151
+1       23.94.58.7
+1       23.234.70.149
+1       23.234.69.59
+1       23.234.68.230
+1       23.234.117.79
+1       23.234.114.197
+1       23.162.40.165
+1       198.23.161.3
+1       198.23.161.10
+1       192.109.138.9
+1       185.213.193.234
+6       167.160.161.216
+6       167.160.161.193
+1       149.40.50.116
+1       146.70.165.70
+1       107.174.46.11
+1       104.168.80.9
+1       104.168.80.3
+1       104.168.80.13
+
+Number of username/password <span class="nb">test </span>by username,password,IP
+<span class="nt">-----------------------</span>
+1	zramirez,z[<span class="k">***</span><span class="o">]</span>z,94.26.105.11
+1	ybryant,y[<span class="k">***</span><span class="o">]</span>t,94.26.105.8
+1	wpierce,w[<span class="k">***</span><span class="o">]</span>e,94.26.105.3
+1	uking,u[<span class="k">***</span><span class="o">]</span>g,94.26.88.5
+1	tstephens,t[<span class="k">***</span><span class="o">]</span>s,94.26.88.3
+1	trainee,T[<span class="k">***</span><span class="o">]</span>4,185.213.193.234
+1	teresa,T[<span class="k">***</span><span class="o">]</span>1,23.234.114.197
+1	sromero,s[<span class="k">***</span><span class="o">]</span>o,91.92.34.11
+2	sqluser,s[<span class="k">***</span><span class="o">]</span>1,43.225.189.170
+1	simon,s[<span class="k">***</span><span class="o">]</span>n,45.134.142.222
+1	scans,P[<span class="k">***</span><span class="o">]</span>0,68.235.46.145
+1	report,%[<span class="k">***</span><span class="o">]</span>x,68.235.46.88
+1	pferguson,p[<span class="k">***</span><span class="o">]</span>n,104.168.80.13
+1	oromero,o[<span class="k">***</span><span class="o">]</span>o,104.168.80.3
+1	oallen,o[<span class="k">***</span><span class="o">]</span>n,104.168.80.9
+1	nkennedy,n[<span class="k">***</span><span class="o">]</span>y,107.174.46.11
+1	media,s[<span class="k">***</span><span class="o">]</span>t,23.162.40.165
+1	landon,l[<span class="k">***</span><span class="o">]</span>3,146.70.165.70
+1	ladams,l[<span class="k">***</span><span class="o">]</span>s,198.23.161.10
+2	kg,1[<span class="k">***</span><span class="o">]</span>8,167.160.161.193
+2	kf,1[<span class="k">***</span><span class="o">]</span>8,167.160.161.193
+2	ke,1[<span class="k">***</span><span class="o">]</span>8,167.160.161.193
+1	jolson,j[<span class="k">***</span><span class="o">]</span>n,198.23.161.3
+2	isreal,i[<span class="k">***</span><span class="o">]</span>2,43.225.189.151
+1	intranet,p[<span class="k">***</span><span class="o">]</span>d,23.234.68.230
+2	hg,P[<span class="k">***</span><span class="o">]</span>d,167.160.161.216
+2	hf,P[<span class="k">***</span><span class="o">]</span>d,167.160.161.216
+2	he,P[<span class="k">***</span><span class="o">]</span>d,167.160.161.216
+1	frussell,f[<span class="k">***</span><span class="o">]</span>l,23.94.58.7
+1	fausto,F[<span class="k">***</span><span class="o">]</span>3,23.234.70.149
+1	elong,e[<span class="k">***</span><span class="o">]</span>g,192.109.138.9
+1	andrew,P[<span class="k">***</span><span class="o">]</span>3,23.234.69.59
+1	amy,W[<span class="k">***</span><span class="o">]</span>1,23.234.117.79
+1	aaron,a[<span class="k">***</span><span class="o">]</span>1,149.40.50.116
+
+
+Number of <span class="nb">times </span>each username was seen
+<span class="nt">-----------------------</span>
+1       zramirez
+1       ybryant
+1       wpierce
+1       uking
+1       tstephens
+1       trainee
+1       teresa
+1       sromero
+2       sqluser
+1       simon
+1       scans
+1       report
+1       pferguson
+1       oromero
+1       oallen
+1       nkennedy
+1       media
+1       landon
+1       ladams
+2       kg
+2       kf
+2       ke
+1       jolson
+2       isreal
+1       intranet
+2       hg
+2       hf
+2       he
+1       frussell
+1       fausto
+1       elong
+1       andrew
+1       amy
+1       aaron
+
+Number of <span class="nb">times </span>each password was seen
+<span class="nt">-----------------------</span>
+1       z[<span class="k">***</span><span class="o">]</span>z
+1       y[<span class="k">***</span><span class="o">]</span>t
+1       w[<span class="k">***</span><span class="o">]</span>e
+1       W[<span class="k">***</span><span class="o">]</span>1         
+1       u[<span class="k">***</span><span class="o">]</span>g
+1       t[<span class="k">***</span><span class="o">]</span>s
+1       T[<span class="k">***</span><span class="o">]</span>4         
+1       T[<span class="k">***</span><span class="o">]</span>1         
+1       s[<span class="k">***</span><span class="o">]</span>t         
+1       s[<span class="k">***</span><span class="o">]</span>o
+2       s[<span class="k">***</span><span class="o">]</span>1         
+1       s[<span class="k">***</span><span class="o">]</span>n
+1       p[<span class="k">***</span><span class="o">]</span>n         
+1       P[<span class="k">***</span><span class="o">]</span>0         
+1       p[<span class="k">***</span><span class="o">]</span>d         
+1       P[<span class="k">***</span><span class="o">]</span>3         
+6       P[<span class="k">***</span><span class="o">]</span>d         
+1       o[<span class="k">***</span><span class="o">]</span>o         
+1       o[<span class="k">***</span><span class="o">]</span>n         
+1       n[<span class="k">***</span><span class="o">]</span>y         
+1       l[<span class="k">***</span><span class="o">]</span>3         
+1       l[<span class="k">***</span><span class="o">]</span>s         
+1       j[<span class="k">***</span><span class="o">]</span>n         
+2       i[<span class="k">***</span><span class="o">]</span>2         
+1       f[<span class="k">***</span><span class="o">]</span>l         
+1       F[<span class="k">***</span><span class="o">]</span>3         
+1       e[<span class="k">***</span><span class="o">]</span>g         
+1       P[<span class="k">***</span><span class="o">]</span>3         
+1       W[<span class="k">***</span><span class="o">]</span>1         
+1       a[<span class="k">***</span><span class="o">]</span>1         
+1       %[<span class="k">***</span><span class="o">]</span>x         
+6       1[<span class="k">***</span><span class="o">]</span>8         
+
+Dumping IPs to bad_ips.txt
+<span class="nt">-----------------------</span>
+104.168.80.13   2025-07-31T15:03:05.072113+00:00
+104.168.80.3    2025-07-31T15:08:45.380433+00:00
+104.168.80.9    2025-07-31T15:10:20.994895+00:00
+107.174.46.11   2025-07-31T15:01:19.092927+00:00
+146.70.165.70   2025-07-31T15:11:13.777620+00:00
+149.40.50.116   2025-07-31T15:06:47.697336+00:00
+167.160.161.193 2025-07-31T15:00:49.098469+00:00
+167.160.161.193 2025-07-31T15:01:22.168543+00:00
+167.160.161.193 2025-07-31T15:06:09.337948+00:00
+167.160.161.193 2025-07-31T15:06:42.417378+00:00
+167.160.161.193 2025-07-31T15:11:35.171434+00:00
+167.160.161.193 2025-07-31T15:12:07.689597+00:00
+167.160.161.216 2025-07-31T15:01:02.217613+00:00
+167.160.161.216 2025-07-31T15:01:35.845423+00:00
+167.160.161.216 2025-07-31T15:06:36.153136+00:00
+167.160.161.216 2025-07-31T15:07:09.860109+00:00
+167.160.161.216 2025-07-31T15:12:11.541550+00:00
+167.160.161.216 2025-07-31T15:12:48.902528+00:00
+185.213.193.234 2025-07-31T15:00:18.385476+00:00
+192.109.138.9   2025-07-31T15:08:21.726254+00:00
+198.23.161.10   2025-07-31T15:04:46.027902+00:00
+198.23.161.3    2025-07-31T15:06:14.681890+00:00
+23.162.40.165   2025-07-31T15:12:14.744867+00:00
+23.234.114.197  2025-07-31T15:04:50.948803+00:00
+23.234.117.79   2025-07-31T15:01:44.388001+00:00
+23.234.68.230   2025-07-31T15:02:55.229870+00:00
+23.234.69.59    2025-07-31T15:14:36.722044+00:00
+23.234.70.149   2025-07-31T15:01:05.474080+00:00
+23.94.58.7      2025-07-31T15:13:23.427372+00:00
+43.225.189.151  2025-07-31T15:01:33.667071+00:00
+43.225.189.151  2025-07-31T15:08:47.140009+00:00
+43.225.189.170  2025-07-31T15:02:53.167762+00:00
+43.225.189.170  2025-07-31T15:10:34.016648+00:00
+45.134.142.222  2025-07-31T15:10:19.605062+00:00
+68.235.46.145   2025-07-31T15:09:05.908442+00:00
+68.235.46.88    2025-07-31T15:04:32.869353+00:00
+91.92.34.11     2025-07-31T15:00:44.028099+00:00
+94.26.105.11    2025-07-31T15:14:45.742802+00:00
+94.26.105.3     2025-07-31T15:07:32.213667+00:00
+94.26.105.8     2025-07-31T15:08:26.972756+00:00
+94.26.88.3      2025-07-31T15:05:36.710669+00:00
+94.26.88.5      2025-07-31T15:04:45.977357+00:00
+
+Dumping IPs exploiting Symlink Persistence Method to bad_ips_symlink.txt
+<span class="nt">-----------------------</span>
+
+✅ JSON report written to /home/peter/Fortigate.VPN-SSL.Honeypot/output_parsing/report.json
+🆗 SQLite schema ready <span class="o">(</span>/home/peter/Fortigate.VPN-SSL.Honeypot/db/honeypot.db<span class="o">)</span>
+✅ Imported creds.log → honeypot_creds
+✅ Imported nginx symlink attempts → symlink_exploits
+🗑️  Logs truncated – parse.sh complete.
+</pre></table></code></div></div><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png" alt="" /></a></p><h1 id="scheduled-reporting">Scheduled Reporting</h1><p>I recommend you to configure a service and a timer in <code class="language-plaintext highlighter-rouge">systemd</code> to periodically parse the information gathered at the Honeypot. The repository contains a template for it. Here is the one that I am using.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="c"># cat fgate-vpn-honeypot-parse-and-report.service</span>
+<span class="c"># /etc/systemd/system/fgate-vpn-honeypot-parse-and-report.service</span>
+<span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Parse and report FortiGate VPN-SSL Honeypot service
+
+<span class="o">[</span>Service]
+<span class="nv">User</span><span class="o">=</span>peter
+<span class="nv">Group</span><span class="o">=</span>peter
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/home/peter/Fortigate.VPN-SSL.Honeypot/
+<span class="nv">Type</span><span class="o">=</span>oneshot
+<span class="nv">ExecStart</span><span class="o">=</span>/home/peter/Fortigate.VPN-SSL.Honeypot/parse.sh
+</pre></table></code></div></div><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="c"># cat fgate-vpn-honeypot-parse-and-report.timer</span>
+<span class="c"># /etc/systemd/system/fgate-vpn-honeypot-parse-and-report.timer</span>
+<span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Parse and report FortiGate VPN-SSL Honeypot service timer
+
+<span class="o">[</span>Timer]
+<span class="nv">OnCalendar</span><span class="o">=</span><span class="k">*</span>:0/30
+<span class="nv">Persistent</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="o">[</span>Install]
+<span class="nv">WantedBy</span><span class="o">=</span>timers.target
+</pre></table></code></div></div><p>One important reminder, as the Honey run as root inside the container.</p><blockquote><p><strong>ACL Fix</strong>: the logs are written as <code class="language-plaintext highlighter-rouge">root</code> (inside the container). Allow the service user write access in order to the parser script (parse.sh) to be able to clear the logs:</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>setfacl <span class="nt">-m</span> u:fortihoney:rw data/log/honey/creds.log data/log/nginx/access.log
+</pre></table></code></div></div></blockquote><h1 id="reporting-modules">Reporting Modules</h1><p>The Honeypot contains some modules to perform reporting of the information gathered.</p><p>Every reporting module is at is <em>report_to_</em> directory. I recommend you to run each one in a in its proper <em>venv</em>.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cd </span>report_to_...
+<span class="nv">$ </span>python <span class="nt">-m</span> venv .venv
+<span class="nv">$ </span><span class="nb">.</span> .venv/bin/activate
+<span class="nv">$ </span>pip <span class="nb">install</span> <span class="nt">-r</span> requirements.txt
+</pre></table></code></div></div><h3 id="reporting-to-vtotx">Reporting to VT/OTX</h3><p>When reporting to VT/OTX, the datetime of the last successful report is saved to prevent reporting again the same IP addresses.</p><p>Configure the yaml file with the credentials and the comment and tag to use when reporting it in VT.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cat </span>report_to_vt/vt_config/report_to_vt_bad_ips.yaml.template
+vt_api_key: <span class="s2">"&lt;YOUR VT API KEY&gt;"</span>
+tag: <span class="s2">"FortiGate VPN‑SSL Honeypot"</span>        <span class="c"># used for per‑tag state tracking</span>
+comment: <span class="s2">"IP {ip} was seen bruteforcing FortiGate VPN-SSL at {seen} 🛡️"</span>
+honeypot:
+  ip_file: <span class="s2">"../honeypot_bad_ips.txt"</span>     
+</pre></table></code></div></div><p>Here is an example of a malicious IP being reported.</p><ul><li><a href="https://www.virustotal.com/gui/ip-address/23.234.94.233/community">https://www.virustotal.com/gui/ip-address/23.234.94.233/community</a></ul><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png" alt="" /></a></p><p>And the following is the configuration yaml file for reporting to OTX.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cat </span>report_to_otx/otx_config/report_to_otx.config.yaml.template
+<span class="c"># config.yaml</span>
+
+otx_api_key: YOUR_OTX_API_KEY_HERE
+
+pulse:
+  name: <span class="s2">"FortiGate VPN-SSL Honeypot"</span>
+  description: <span class="s2">"IPs bruteforcing FortiGate VPN-SSL gathered from Honeypot"</span>
+  <span class="nb">type</span>: <span class="s2">"blacklist"</span>     <span class="c"># or "threat", "vulnerability", etc.</span>
+  public: <span class="nb">true
+  </span>tlp: <span class="s2">"WHITE"</span>          <span class="c"># TLP: WHITE, GREEN, AMBER, RED</span>
+
+honeypot:
+  ip_file: <span class="s2">"./honeypot_bad_ips.txt"</span>
+</pre></table></code></div></div><p>And here you can find an example of the Pulse.</p><ul><li><a href="https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2">https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2</a></ul><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png" alt="" /></a></p><p>I also recommend to run the Reporting modules periodically via the <code class="language-plaintext highlighter-rouge">systemd</code> timer and service. Here is my full <code class="language-plaintext highlighter-rouge">systemd</code> service run by the timer every 30 minutes which, apart for the aforementioned periodic parsing, will run (in its respective <code class="language-plaintext highlighter-rouge">venvs</code>) the parsing scripts.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre><span class="c"># cat fgate-vpn-honeypot-parse-and-report.service</span>
+<span class="c"># /etc/systemd/system/fgate-vpn-honeypot-parse-and-report.service</span>
+<span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Parse and report FortiGate VPN-SSL Honeypot service
+
+<span class="o">[</span>Service]
+<span class="nv">User</span><span class="o">=</span>peter
+<span class="nv">Group</span><span class="o">=</span>peter
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/home/peter/Fortigate.VPN-SSL.Honeypot/
+<span class="nv">Type</span><span class="o">=</span>oneshot
+<span class="nv">ExecStart</span><span class="o">=</span>/home/peter/Fortigate.VPN-SSL.Honeypot/parse.sh
+<span class="nv">ExecStart</span><span class="o">=</span>-/home/peter/Fortigate.VPN-SSL.Honeypot/report_to_otx/.venv/bin/python3 report_to_otx/report_to_otx.py <span class="nt">-c</span> report_to_otx/otx_config/report_to_otx.config.yaml
+<span class="nv">ExecStart</span><span class="o">=</span>-/home/peter/Fortigate.VPN-SSL.Honeypot/report_to_otx/.venv/bin/python3 report_to_otx/report_to_otx.py <span class="nt">-c</span> report_to_otx/otx_config/report_to_otx.config.symlink.yaml
+<span class="nv">ExecStart</span><span class="o">=</span>-/home/peter/Fortigate.VPN-SSL.Honeypot/report_to_vt/.venv/bin/python3 report_to_vt/report_to_vt.py <span class="nt">-c</span> report_to_vt/vt_config/report_to_vt_bad_ips.yaml
+<span class="nv">ExecStart</span><span class="o">=</span>-/home/peter/Fortigate.VPN-SSL.Honeypot/report_to_vt/.venv/bin/python3 report_to_vt/report_to_vt.py <span class="nt">-c</span> report_to_vt/vt_config/report_to_vt_bad_ips.symlink.yaml
+</pre></table></code></div></div><h3 id="reporting-to-email">Reporting to Email</h3><p>When reporting to email, the threshold of data to include in the report is selected by the –hours parameter, by default the last 24h of Honeypot data is used.</p><p>The configuration for reporting to email is shown below.</p><div class="language-shell highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">cat </span>report_to_email/email_config.yaml.template
+subject: <span class="s2">"📊 FortiGate SSL‑VPN Honeypot – Daily Report"</span>
+from: <span class="s2">"Honeypot &lt;honeypot@example.com&gt;"</span>   <span class="c"># optional; defaults to username if omitted</span>
+to:
+  - security@example.com
+  - soc@example.com
+smtp:
+  host: smtp.example.com
+  port: 465              <span class="c"># 465 = SMTPS, 587 = STARTTLS, 25 = opportunistic</span>
+  username: honeypot@example.com
+  password: <span class="s2">"s3cr3tP@ssw0rd"</span>
+  use_ssl: <span class="nb">true</span>          <span class="c"># true ⇒ implicit TLS (465); false ⇒ STARTTLS (587/25)</span>
+</pre></table></code></div></div><p>It will produce an email with the following information.</p><ul><li>🌐 Attempts by IP<li>🧑‍💻 Attempts by User / Pass / IP<li>👤 Attempts by User<li>🔑 Attempts by Password<li>⚠️ Symlink Exploit Attempts<li>⛔ Bad IPs<li>💥 Exfiltrated Credentials</ul><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png" alt="" /></a></p><h1 id="counter-intelligence-deliberately-exfiltrate-credentials">Counter-Intelligence (Deliberately Exfiltrate Credentials)</h1><p>The honeypot isn’t just for telemetry—it actively <strong>hunts for leaked or deliberately planted passwords</strong> you care about.</p><ol><li><p><strong>Watch-list file</strong><br /> Drop one password per line into <code class="language-plaintext highlighter-rouge">exfiltrated_passwords.txt</code> at the repo root.<br /> Example:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre> S3cr3tP@ssw0rd
+ th1sIsB41t
+</pre></table></code></div></div></ol><p>The email‐report script loads that watch-list and flags any match during the selected time-window.</p><p>A dedicated table “💥 Exfiltrated Credentials” appears in the email report, showing the IP addresses along with the timestamp that used the credentials that were deliberately exfiltrated.</p><p>Ideas to exfiltrate credentials</p><ul><li>Run stealer in a controlled environ<li>Write the credentials in pastebin<li>Sell the credentials in a forum<li>…</ul><p>For example, I exfiltrated fake credentials in a Pastebin post and some days after an attempt was performed using them.</p><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png" alt="" /></a></p><h1 id="symlink-exploit-detections">Symlink Exploit Detections</h1><p>The Honeypot also detects attempt to use the Symlink persistence method in FortiGate units (<a href="https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity">https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).</a>.)</p><p>Unfortunately, as this is not public yet it has been removed. Showing the detection approach would shows also how to exploit it.</p><p>For example, https://www.onyphe.io/ scans the internet finding vulnerable appliances and they were caught by the Honeypot. I am sorry but the detection of these attempts has is not available in the public version of the Honeypot. Maybe some day.</p><ul><li><a href="https://x.com/PedroGabaldon/status/1937439245482000793">https://x.com/PedroGabaldon/status/1937439245482000793</a></ul><p><a href="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png" alt="" /></a></p></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/en/'>en</a>, <a href='/categories/fortigate/'>FortiGate</a>, <a href='/categories/vpn/'>VPN</a>, <a href='/categories/honeypot/'>Honeypot</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/honeypot/" class="post-tag no-text-decoration" >honeypot</a> <a href="/tags/vpn/" class="post-tag no-text-decoration" >vpn</a> <a href="/tags/fortigate/" class="post-tag no-text-decoration" >fortigate</a> <a href="/tags/intelligence/" class="post-tag no-text-decoration" >intelligence</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=FortiGate VPN-SSL Honeypot - Peter Gabaldon&url=https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=FortiGate VPN-SSL Honeypot - Peter Gabaldon&u=https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=FortiGate VPN-SSL Honeypot - Peter Gabaldon&url=https://petergabaldon.github.io/posts/FortiGate-VPN-SSL-Honeypot/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/FortiGate-VPN-SSL-Honeypot/">FortiGate VPN-SSL Honeypot</a><li><a href="/posts/Bypass-Azure-Admin-Approval-Mode-Enumeration/">Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating</a><li><a href="/posts/Finding-TeamViewer-0days-Part-1/">Finding TeamViewer 0days - Part I</a><li><a href="/posts/Finding-TeamViewer-0days-Part-3/">Finding TeamViewer 0days - Part III</a><li><a href="/posts/Diamond-And-Sapphire-Tickets/">Diamond And Sapphire Tickets</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/cybersecurity/">cybersecurity</a> <a class="post-tag" href="/tags/pentesting/">pentesting</a> <a class="post-tag" href="/tags/red-team/">red team</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/cve-2024-7479/">CVE-2024-7479</a> <a class="post-tag" href="/tags/cve-2024-7481/">CVE-2024-7481</a> <a class="post-tag" href="/tags/kerberos/">kerberos</a> <a class="post-tag" href="/tags/tv-2024-1006/">tv-2024-1006</a> <a class="post-tag" href="/tags/zdi-24-1289/">ZDI-24-1289</a> <a class="post-tag" href="/tags/zdi-24-1290/">ZDI-24-1290</a></div></div></div><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/FortiGate-Symlink-Attack/"><div class="card-body"> <span class="timeago small" > Feb 10 <i class="unloaded">2026-02-10T00:00:00+01:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>FortiGate Symlink Persistence Method</h3><div class="text-muted small"><p> Analysis and Exploitation of FortiGate Symlink Persistence Method Background📚 Around April 2025 Fortinet started warning customers that a Threat Actor (TA) continued to have remote read-only acc...</p></div></div></a></div><div class="card"> <a href="/posts/Playing-With-Windows-Security-Part-1/"><div class="card-body"> <span class="timeago small" > Feb 4, 2021 <i class="unloaded">2021-02-04T00:00:00+01:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Playing With Windows Security - Part 1</h3><div class="text-muted small"><p> Windows Authentication. In this first part of Windows hacking we will be covering aspects related on how Windows authentication works. I’m coming from Linux ecosystem so sometimes I will try to co...</p></div></div></a></div><div class="card"> <a href="/posts/Playing-With-Windows-Security-Part-2/"><div class="card-body"> <span class="timeago small" > Feb 21, 2021 <i class="unloaded">2021-02-21T00:00:00+01:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Playing With Windows Security - Part 2</h3><div class="text-muted small"><p> Kerberos Authentication Protocol After the first part at which we talked about authentication in Windows and explained how attacks like Pass-The-Hash works. At this part we are going to analyse Ke...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/Bypass-Azure-Admin-Approval-Mode-Enumeration/" class="btn btn-outline-primary"><p>Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating</p></a> <a href="/posts/FortiGate-Symlink-Attack/" class="btn btn-outline-primary"><p>FortiGate Symlink Persistence Method</p></a></div></div></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script> <script type="text/javascript"> const imgs = document.querySelectorAll('.post-content img'); const observer = lozad(imgs); observer.observe(); </script><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2026 <a href="https://twitter.com/PeterGabaldon">Pedro Gabaldon</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy/" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-xl-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/cybersecurity/">cybersecurity</a> <a class="post-tag" href="/tags/pentesting/">pentesting</a> <a class="post-tag" href="/tags/red-team/">red team</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/cve-2024-7479/">CVE 2024 7479</a> <a class="post-tag" href="/tags/cve-2024-7481/">CVE 2024 7481</a> <a class="post-tag" href="/tags/kerberos/">kerberos</a> <a class="post-tag" href="/tags/tv-2024-1006/">tv 2024 1006</a> <a class="post-tag" href="/tags/zdi-24-1289/">ZDI 24 1289</a> <a class="post-tag" href="/tags/zdi-24-1290/">ZDI 24 1290</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://petergabaldon.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"><div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>{categories}</div><div><i class="fa fa-tag fa-fw"></i>{tags}</div></div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>' }); </script>

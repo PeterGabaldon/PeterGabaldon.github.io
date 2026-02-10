@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="en" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="theme" content="Chirpy v2.7.2"><meta name="generator" content="Jekyll v4.2.0" /><meta property="og:title" content="FortiGate Symlink Persistence Method" /><meta name="author" content="Peter Gabaldon" /><meta property="og:locale" content="en" /><meta name="description" content="Analysis and Exploitation of FortiGate Symlink Persistence Method" /><meta property="og:description" content="Analysis and Exploitation of FortiGate Symlink Persistence Method" /><link rel="canonical" href="https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/" /><meta property="og:url" content="https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/" /><meta property="og:site_name" content="Peter Gabaldon" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2026-02-10T00:00:00+01:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="FortiGate Symlink Persistence Method" /><meta name="twitter:site" content="@PedroGabaldon" /><meta name="twitter:creator" content="@Peter Gabaldon" /><meta name="google-site-verification" content="n4hbrMWNSEClBGstZ5tfJRPe9iWSPul3FA1_3mEJFgQ" /> <script type="application/ld+json"> {"author":{"@type":"Person","name":"Peter Gabaldon"},"description":"Analysis and Exploitation of FortiGate Symlink Persistence Method","url":"https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/","@type":"BlogPosting","headline":"FortiGate Symlink Persistence Method","dateModified":"2026-02-10T00:00:00+01:00","datePublished":"2026-02-10T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/"},"@context":"https://schema.org"}</script><title>FortiGate Symlink Persistence Method | Peter Gabaldon</title><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon.png"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon-precomposed.png"><link rel="apple-touch-icon" sizes="57x57" href="/assets/img/favicons/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/favicons/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicons/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/assets/img/favicons/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicons/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/img/favicons/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/assets/img/favicons/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/favicons/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/manifest.json"><meta name='msapplication-config' content='/assets/img/favicons/browserconfig.xml'><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/assets/img/favicons/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="cdn.jsdelivr.net"><link rel="dns-prefetch" href="cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha256-LA89z+k9fjgMKQ/kq4OO2Mrf8VltYml/VES+Rg0fh20=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous"><link rel="preload" href="/assets/css/post.css" as="style"><link rel="stylesheet" href="/assets/css/post.css"><link rel="preload" as="style" href="/assets/css/lib/bootstrap-toc.min.css"><link rel="stylesheet" href="/assets/css/lib/bootstrap-toc.min.css" /> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script async src="/assets/js/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-N6LPQ2XQ6P"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-N6LPQ2XQ6P'); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/avatar/Peter_avatar.jpg" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Peter Gabaldon</a></div><div class="site-subtitle font-italic">Cybersecurity blog.</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/tabs/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tabs/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/tabs/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/tabs/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/PeterGabaldon" aria-label="github" class="order-3" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/PedroGabaldon" aria-label="twitter" class="order-4" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['',''].join('@')" aria-label="email" class="order-5" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" class="order-6" > <i class="fas fa-rss"></i> </a> <span class="icon-border order-2"></span> <span id="mode-toggle-wrapper" class="order-1"> <i class="mode-toggle fas fa-adjust"></i> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } var self = this; /* always follow the system prefers */ this.sysDarkPrefers.addListener(function() { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.updateMermaid(); }); } /* constructor() */ setDark() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_KEY); sessionStorage.removeItem(ModeToggle.MODE_KEY); } get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode == ModeToggle.DARK_MODE; } get isLightMode() { return this.mode == ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer) ) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } updateMermaid() { if (typeof mermaid !== "undefined") { let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } flipMode() { if (this.hasMode) { if (this.isSysDarkPrefer) { if (this.isLightMode) { this.clearMode(); } else { this.setLight(); } } else { if (this.isDarkMode) { this.clearMode(); } else { this.setDark(); } } } else { if (this.isSysDarkPrefer) { this.setLight(); } else { this.setDark(); } } this.updateMermaid(); } /* flipMode() */ } /* ModeToggle */ let toggle = new ModeToggle(); $(".mode-toggle").click(function() { toggle.flipMode(); }); </script> </span></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>FortiGate Symlink Persistence Method</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><p>&nbsp;&nbsp;&nbsp;</p><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>FortiGate Symlink Persistence Method</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Tue, Feb 10, 2026, 12:00 AM +0100" > Feb 10 <i class="unloaded">2026-02-10T00:00:00+01:00</i> </span> by <span class="author"> Peter Gabaldon </span></div><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="2273 words">12 min</span></div></div><div class="post-content"><h1 id="analysis-and-exploitation-of-fortigate-symlink-persistence-method">Analysis and Exploitation of FortiGate Symlink Persistence Method</h1><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png" alt="" /></a></p><h1 id="background">Background📚</h1><p>Around April 2025 Fortinet started warning customers that a Threat Actor (TA) continued to have remote read-only access to filesystem after patching FortiGates (FGT) units. This was achieved by a path in the VPN-SSL. Basically, requesting some route (we will see it later in the post) in the VPN-SSL, it allowed to <strong>access root file system remotely and without authentication</strong>.</p><p>Using this method, TA could download files as the symbolic link pointed to the root. Among these files, it was possible to download FortiGate configuration, for example.</p><p>Some days later Fortinet published a post in FortiGuard with some information about this.</p><ul><li><a href="https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity">https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity</a></ul><p>If you had one of these versions: <strong>FortiOS 7.4, 7.2, 7.0, 6.4</strong> the symlink was supposedly removed by AV/IPS engine.</p><p>And in these versions: <strong>FortiOS 7.6.2, 7.4.7, 7.2.11 &amp; 7.0.17, 6.4.16</strong> the update removes the symlink and also a patch was added in the VPN-SSL two prevent the exploitation.</p><p>It is very important to note that this is <strong>not a <em>0day</em></strong>. This method was used by TA <strong>after</strong> compromising FortiGates units with other vulns. In the post-exp phase they used to created the symlink that could survive updates of the FGT and thus giving the remote (if VPN-SSL is enabled) read-only access to root filesystem 😎.</p><h1 id="abstract">Abstract💣</h1><p>Basically, a TA (or maybe more than one I don´t know) used to modify a symlink used by language configuration in the VPN-SSL. For years, the TA have used to apply this persistence method when compromising a FortiGate unit.</p><p>Specifically, FortiGate’s VPN-SSL custom languages use a symlink to point to the upload directory in another partition.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre># /migadmin/lang/ directory
+$ ls -la
+total 3088
+drwxr-xr-x  2 peter peter   4096 Jan 20 01:00 .
+drwxr-xr-x 23 peter peter  20480 Jan 20 01:00 ..
+-r--r--r--  1 peter peter 405723 Jan 20 01:00 big5.json.gz
+lrwxrwxrwx  1 peter peter     18 Jan 20 01:00 custom -&gt; /data2/custom_lang
+-r--r--r--  1 peter peter 314080 Jan 20 01:00 en.json.gz
+-r--r--r--  1 peter peter 402738 Jan 20 01:00 euc-kr.json.gz
+-r--r--r--  1 peter peter 395117 Jan 20 01:00 fr.json.gz
+-r--r--r--  1 peter peter 388097 Jan 20 01:00 GB2312.json.gz
+-r--r--r--  1 peter peter 396576 Jan 20 01:00 pg.json.gz
+-r--r--r--  1 peter peter 398429 Jan 20 01:00 sp.json.gz
+-r--r--r--  1 peter peter 421183 Jan 20 01:00 x-sjis.json.gz
+</pre></table></code></div></div><p>TA used to modify this symlink to point to the root of the filesystem so it was possible to access <strong>remotely and without authentication</strong> every file through the VPN-SSL using <code class="language-plaintext highlighter-rouge">/lang/custom/{PATH}</code>.</p><p>For example, in order to download the configuration:</p><ul><li><code class="language-plaintext highlighter-rouge">/lang/custom/data/config/sys_global.conf.gz</code></ul><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png" alt="" /></a></p><p>Now, I encourage you to read the full post if curious about the details. (Spoiler: the patch can be bypassed).</p><h1 id="reversing-and-patch-diffing">Reversing and Patch-Diffing🛠</h1><p>Once we were aware of this method we started to analyze the path and to understand the how this method works.</p><p>First of all we downloaded FortiGate VM from Fortinet in order to extract <code class="language-plaintext highlighter-rouge">rootfs</code> and <code class="language-plaintext highlighter-rouge">ramdisk</code> from VMDK. If you are not aware, <code class="language-plaintext highlighter-rouge">rootfs</code> is encrypted by a custom method and <code class="language-plaintext highlighter-rouge">flatkc</code> is responsible for decrypting it at boot time.</p><p>Recently Fortinet modified the encryption process. <em>RandoriSec</em> documented the updated method and also published a tool in order to be able to extract the contents of <em>rootfs</em>.</p><ul><li><a href="https://blog.randorisec.fr/fortigate-rootfs-decryption/">https://blog.randorisec.fr/fortigate-rootfs-decryption/</a><li><a href="https://github.com/randorisec/decrypt-fortigate-rootfs">https://github.com/randorisec/decrypt-fortigate-rootfs</a></ul><h2 id="extracting-and-decrypting-rootfs">Extracting and decrypting rootfs🔐</h2><p>After launching FortiGates VMs in VMware (v74.7 and v7.4.6) the VMDKs were extracted. There are multiple VMDKs because FortiGate uses various disks (and each of them various partitions), but the first one contains the root filesystem in the first partition.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426170504.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426170504.png" alt="" /></a></p><p>After getting them, the next step is to mount the VMDK and extract <code class="language-plaintext highlighter-rouge">flatkc</code> and the items of root filesystem contained in <code class="language-plaintext highlighter-rouge">rootfs.gz</code></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre><td class="rouge-code"><pre>$ sudo modprobe nbd max_part=16
+$ sudo qemu-nbd -c /dev/nbd2 FGATE-disk1.vmdk
+$ sudo mount /dev/nbd1p2 fs1/
+
+$ ls -la
+total 114060
+drwxr-xr-x 11 root  root      4096 Apr  3 23:59 .
+drwxrwxr-x 10 peter peter     4096 Apr 25 22:13 ..
+drwxr-xr-x  2 root  root      4096 Jan 20 01:00 bin
+drwxr-xr-x  3 root  root      4096 Jan 20 01:00 boot
+-r--r--r--  1 root  root         1 Jan 20 01:00 boot.msg
+drwxr-xr-x  2 root  root      4096 Jan 20 01:00 cmdb
+drwxr-xr-x  2 root  root      4096 Apr  3 22:04 config
+-r--r--r--  2 root  root  17569906 Jan 20 01:00 datafs.tar.gz
+-r--r--r--  2 root  root  17569906 Jan 20 01:00 datafs.tar.gz.bak
+-r--r--r--  2 root  root       256 Jan 20 01:00 datafs.tar.gz.chk
+-r--r--r--  2 root  root       256 Jan 20 01:00 datafs.tar.gz.chk.bak
+-r--r--r--  1 root  root      1137 Jan 20 01:00 .db
+-r--r--r--  1 root  root     13729 Jan 20 01:00 .db.x
+-rw-r--r--  1 root  root         0 Apr  3 23:59 dhcp6s_db.bak
+-rw-r--r--  1 root  root         0 Apr  3 23:59 dhcpddb.bak
+-rw-r--r--  1 root  root         0 Apr  3 23:59 dhcp_ipmac.dat.bak
+drwxr-xr-x 15 root  root      4096 Apr  3 22:05 etc
+-rw-r--r--  1 root  root       165 Apr  3 23:59 extlinux.conf
+-r--r--r--  1 root  root        53 Jan 20 01:00 filechecksum
+-r--r--r--  1 root  root   7475296 Jan 20 01:00 flatkc
+-r--r--r--  1 root  root       256 Jan 20 01:00 flatkc.chk
+-r--r--r--  1 root  root      3282 Jan 20 01:00 flatkc.sig
+-r--r--r--  1 root  root     11768 Jan 20 01:00 hash_bin.sha256
+-r--r--r--  1 root  root    122656 Mar  4  2016 ldlinux.c32
+-r--r--r--  1 root  root     69632 Mar  4  2016 ldlinux.sys
+drwxr-xr-x  2 root  root      4096 Apr  3 23:59 lib
+drwx------  2 root  root      4096 Apr  3 22:02 log
+drwx------  2 root  root     16384 Jan 20 19:44 lost+found
+-r--r--r--  1 root  root  73822741 Jan 20 01:00 rootfs.gz
+-r--r--r--  1 root  root       256 Jan 20 01:00 rootfs.gz.chk
+d-wxr----t  3 root  root      4096 Apr  3 23:59 web-ui
+</pre></table></code></div></div><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426171741.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426171741.png" alt="" /></a></p><p>Extracting and decrypting <code class="language-plaintext highlighter-rouge">rootfs</code> will allow us to retrieve <code class="language-plaintext highlighter-rouge">init</code> binary and analyze FortiGate VPN-SSL to study the patch.</p><p>The next step is to decrypt it using <em>Randorisec</em> tool.</p><h3 id="a-digress">A Digress</h3><hr /><p>It did not work at first glance. In summary, the version of <code class="language-plaintext highlighter-rouge">vmlinux-to-elf</code> I was using was not able to reconstruct <code class="language-plaintext highlighter-rouge">kallsyms</code> symbols table and because of that I ended up modifying <em>Randorisec</em> tool to find decryption routine using the stack size of that function instead of the symbol name.</p><p>If you are curious about the details an <em>issue</em> and a PR was opened.</p><ul><li><a href="https://github.com/randorisec/decrypt-fortigate-rootfs/issues/1">https://github.com/randorisec/decrypt-fortigate-rootfs/issues/1</a><li><a href="https://github.com/randorisec/decrypt-fortigate-rootfs/pull/2">https://github.com/randorisec/decrypt-fortigate-rootfs/pull/2</a></ul><p>And here is my fork with the modification</p><ul><li><a href="https://github.com/PeterGabaldon/decrypt-fortigate-rootfs/tree/locate_fgt_verify_initrd_with_stack_size">https://github.com/PeterGabaldon/decrypt-fortigate-rootfs/tree/locate_fgt_verify_initrd_with_stack_size</a></ul><hr /><p>After that we can continue to convert <code class="language-plaintext highlighter-rouge">flatkc</code> to a full ELF and decrypt <code class="language-plaintext highlighter-rouge">rootfs</code>.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre><td class="rouge-code"><pre>$ python3 -m venv .venv
+$ pip install -r requirements.txt
+$ python3 decrypt_rootfs.py --debug  ../flatkc.v7.4.7.elf ../rootfs.7.4.7.gz ../rootfs.7.4.7.gz.decrypted
+ ____      _    _   _ ____   ___  ____  ___ ____  _____ ____ 
+|  _ \    / \  | \ | |  _ \ / _ \|  _ \|_ _/ ___|| ____/ ___|
+| |_) |  / _ \ |  \| | | | | | | | |_) || |\___ \|  _|| |    
+|  _ &lt;  / ___ \| |\  | |_| | |_| |  _ &lt; | | ___) | |__| |___ 
+|_| \_\/_/   \_\_| \_|____/ \___/|_| \_\___|____/|_____\____|
+                                                             
+
+                   [https://randorisec.fr](https://randorisec.fr)
+
+
+                  
+[INFO] Retrieving crypto material...
+0xffffffff8170d2b0
+
+[DEBUG] SEED address found: 0xffffffff8170d2b0
+[DEBUG] SEED: b'FA468F98F238DE76AC5A8B36C0EAF915E5CF1D3365E307A845A0407627A7F8A4'
+[DEBUG] RSAPUBKEY: b'6766FF5EE42A96C860CAFF316F0597AEEBD7170E6F0487523795AD8AA495CF4DCEC0ADE51C01A84F5A2D7FA243D77716B8FD7867139510C69FFB410852A975C2EF3AE92856A21C8EB66029F07CDDC3FF8100488B7EF8B5197E02406373584CD85210CE31A9A72F580B3C0AE0DF5A68B39D972E8643F4BD0FBF8E0275AF89D0C09C2F57C78A47D2943D810E828ECA14E1F5667A7960EB66280AFC6CBB393A36A22A5424F99AE6189D21FBA4ED1988D6BFC62033079FE5E94BAFAF815222AE3C4C0203BA8BC391942E5E41914C65566C74B061E6CC615A2294F85AC245B6BE8D498E2303B75EF61C68DAA868DA1C72D51E1FA0DC1770C09BE7CD998BC78747518B9FB15484E4877324AB70F0A57018'
+[DEBUG] AES key: b'655487820C60D573857985065A9D2D2AA0F0E66E8755E7E577E99226EC663901'
+[DEBUG] AES counter: b'988BA0AEB5DA6A452E809968F5076261'
+[INFO] Decrypting ../rootfs.7.4.7.gz...
+[DEBUG] AES-CTR increment: 12
+73822496it [00:19, 3832264.67it/s]                                                                                                                                                                                                 
+[INFO] DONE.
+</pre></table></code></div></div><p>Once it is decrypted the last step is to <code class="language-plaintext highlighter-rouge">gunzip</code> it and decompress from <code class="language-plaintext highlighter-rouge">cpio</code>.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>$ mv rootfs.7.4.7.gz.decrypted rootfs.7.4.7.gz.decrypted.gz
+$ gunzip rootfs.7.4.7.gz.decrypted.gz
+$ mkdir cpio_extract; cd cpio_extract; sudo cpio -idv &lt; ../rootfs.7.4.7.gz.decrypted
+$ cd cpio_extract; sudo cpio -idv &lt; ../rootfs.7.4.7.gz.decrypted 
+.
+lib
+sys
+node-scripts.tar.xz
+[...]
+233843 blocks
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre><td class="rouge-code"><pre>$ ls -la
+total 47216
+drwxrwxr-x 14 peter peter     4096 Apr 26 17:46 .
+drwxrwxr-x  3 peter peter     4096 Apr 26 17:42 ..
+drwxr-xr-x  2 peter peter     4096 Jan 20 01:00 bin
+-r--r--r--  1 root  root  33109932 Apr 26 17:45 bin.tar.xz
+drwxr-xr-x  2 root  root      4096 Apr 26 17:45 boot
+drwxr-xr-x  3 root  root      4096 Apr 26 17:45 data
+drwxr-xr-x  2 root  root      4096 Apr 26 17:45 data2
+drwxr-xr-x  8 root  root     20480 Apr 26 17:45 dev
+lrwxrwxrwx  1 root  root         8 Apr 26 17:45 etc -&gt; data/etc
+lrwxrwxrwx  1 root  root         1 Apr 26 17:45 fortidev -&gt; /
+lrwxrwxrwx  1 root  root        10 Apr 26 17:45 init -&gt; /sbin/init
+drwxr-xr-x  5 root  root      4096 Apr 26 17:45 lib
+lrwxrwxrwx  1 root  root         4 Apr 26 17:45 lib64 -&gt; /lib
+-r--r--r--  1 root  root  14456836 Apr 26 17:45 migadmin.tar.xz
+-r--r--r--  1 root  root    549180 Apr 26 17:45 node-scripts.tar.xz
+drwxr-xr-x  2 root  root      4096 Apr 26 17:45 proc
+drwxr-xr-x  2 root  root      4096 Apr 26 17:45 sbin
+drwxr-xr-x  2 root  root      4096 Apr 26 17:45 sys
+drwxr-xr-x  2 root  root      4096 Apr 26 17:45 tmp
+drwxr-xr-x  3 root  root      4096 Apr 26 17:45 usr
+-r--r--r--  1 root  root    148572 Apr 26 17:45 usr.tar.xz
+drwxr-xr-x  9 root  root      4096 Apr 26 17:45 var
+
+</pre></table></code></div></div><p>Now <code class="language-plaintext highlighter-rouge">init</code> binary can be extracted.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>$ tar xJvf bin.tar.xz
+$ ls -la bin/init
+-r-xr--r-- 1 peter peter 79955752 Jan 20 01:00 bin/init
+</pre></table></code></div></div><p>The same process was done with version 7.4.6 to patch-diff init binaries.</p><h1 id="patch-analysis">Patch-Analysis</h1><p>In order to analyze the differences I like to use <code class="language-plaintext highlighter-rouge">Bindiff</code> and <code class="language-plaintext highlighter-rouge">BinExport</code> plugin in <code class="language-plaintext highlighter-rouge">Ghidra</code>.</p><p>One important thing is that because of the size of <code class="language-plaintext highlighter-rouge">init</code> binary it is necessary to launch <code class="language-plaintext highlighter-rouge">Ghidra</code> with more memory. This can be easily achieved modifying <code class="language-plaintext highlighter-rouge">MAXMEM</code> in <code class="language-plaintext highlighter-rouge">ghidrarun</code>.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426181602.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426181602.png" alt="" /></a></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre>$ cat ghidraRun
+#!/usr/bin/env bash
+
+#----------------------------------------
+# Ghidra launch
+#----------------------------------------
+
+# Maximum heap memory may be changed if default is inadequate. This will generally be up to 1/4 of 
+# the physical memory available to the OS. Uncomment MAXMEM setting if non-default value is needed.
+#MAXMEM=2G
+
+# Resolve symbolic link if present and get the directory this script lives in.
+# NOTE: "readlink -f" is best but works on Linux only, "readlink" will only work if your PWD
+# contains the link you are calling (which is the best we can do on macOS), and the "echo" is the 
+# fallback, which doesn't attempt to do anything with links.
+SCRIPT_FILE="$(readlink -f "$0" 2&gt;/dev/null || readlink "$0" 2&gt;/dev/null || echo "$0")"
+SCRIPT_DIR="${SCRIPT_FILE%/*}"
+MAXMEM=16G
+
+# Launch Ghidra
+"${SCRIPT_DIR}"/support/launch.sh bg jdk Ghidra "${MAXMEM}" "" ghidra.GhidraRun "$@"
+</pre></table></code></div></div><p>After generating the <code class="language-plaintext highlighter-rouge">BinExports</code> we can move on to <code class="language-plaintext highlighter-rouge">BinDiff</code> and <code class="language-plaintext highlighter-rouge">IDA</code>.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426183646.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426183646.png" alt="" /></a></p><p>The modified functions that add the check for the VPN-SSL paths are the following. These corresponds to two VPN-SSL handlers.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426184038.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426184038.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426184108.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426184108.png" alt="" /></a></p><p>Fortinet is now using in two VPN-SSL handlers a routine to resolve the <em>Symlink</em> and check that it points to the corresponding path.</p><p><code class="language-plaintext highlighter-rouge">sub_272F3A0</code></p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426184425.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426184425.png" alt="" /></a></p><p>This function basically takes a single argument—a file path (<code class="language-plaintext highlighter-rouge">src</code>)—and returns 1 if that file lives directly under one of two special language‐resource directories, and 0 otherwise. It calls <code class="language-plaintext highlighter-rouge">realpath</code> this way <code class="language-plaintext highlighter-rouge">realpath(dirname(path), resolved);</code>.</p><p>This routine is called in two VPN-SSL handlers when the following path is requested in the VPN-SSL <code class="language-plaintext highlighter-rouge">/lang/custom</code>.</p><p><code class="language-plaintext highlighter-rouge">sub_196C120</code> (<code class="language-plaintext highlighter-rouge">default_handler</code>)</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426184915.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426184915.png" alt="" /></a></p><p>If the check of the symbolic link is not OK a <code class="language-plaintext highlighter-rouge">403 Forbidden</code> will be returned.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426185243.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426185243.png" alt="" /></a></p><p><code class="language-plaintext highlighter-rouge">sub_1990D90</code> (<code class="language-plaintext highlighter-rouge">sslvpn_zip_handler</code>)</p><p>Basically, the same check.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426185138.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426185138.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426185213.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426185213.png" alt="" /></a></p><p>So, now we know that Fortinet is checking for queries with <code class="language-plaintext highlighter-rouge">/lang/custom</code> 😊.</p><p>Now moving into exploitation 🔥.</p><h1 id="exploitation">Exploitation🧨</h1><p>The <code class="language-plaintext highlighter-rouge">/lang/</code> path can be queried in the VPN-SSL without authentication. For example, you can request <code class="language-plaintext highlighter-rouge">/lang/sp.json</code> (Spanish 🇪🇸).</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426192344.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426192344.png" alt="" /></a></p><p>The following languages are incorporated in the VPN-SSL (<code class="language-plaintext highlighter-rouge">/migadmin/lang</code>).</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre># /migadmin/lang/ directory
+$ ls -la
+total 3088
+drwxr-xr-x  2 peter peter   4096 Jan 20 01:00 .
+drwxr-xr-x 23 peter peter  20480 Jan 20 01:00 ..
+-r--r--r--  1 peter peter 405723 Jan 20 01:00 big5.json.gz
+lrwxrwxrwx  1 peter peter     18 Jan 20 01:00 custom -&gt; /data2/custom_lang
+-r--r--r--  1 peter peter 314080 Jan 20 01:00 en.json.gz
+-r--r--r--  1 peter peter 402738 Jan 20 01:00 euc-kr.json.gz
+-r--r--r--  1 peter peter 395117 Jan 20 01:00 fr.json.gz
+-r--r--r--  1 peter peter 388097 Jan 20 01:00 GB2312.json.gz
+-r--r--r--  1 peter peter 396576 Jan 20 01:00 pg.json.gz
+-r--r--r--  1 peter peter 398429 Jan 20 01:00 sp.json.gz
+-r--r--r--  1 peter peter 421183 Jan 20 01:00 x-sjis.json.gz
+</pre></table></code></div></div><p>You see <code class="language-plaintext highlighter-rouge">custom</code> pointing to <code class="language-plaintext highlighter-rouge">/data2/custom_lang</code> 😉?</p><p>In VPN-SSL it is possible to configure a custom language. First it is necessary to enable it.</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>config system global
+    set gui-custom-language enable
+end
+</pre></table></code></div></div><p>After that it is possible to upload a <code class="language-plaintext highlighter-rouge">JSON</code> file like we saw before and configure it in the VPN-SSL.</p><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_19-41-23.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_19-41-23.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_19-41-05.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_19-41-05.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_19-40-05.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_19-40-05.png" alt="" /></a></p><p>Later, in the VPN-SSL portal it can be selected.</p><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_19-42-25.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_19-42-25.png" alt="" /></a></p><p>As we saw in the languages directory of VPN-SSL (<code class="language-plaintext highlighter-rouge">/migadmin/lang</code>) there is always <code class="language-plaintext highlighter-rouge">custom</code> pointing to <code class="language-plaintext highlighter-rouge">/data2/custom_lang</code>. The <code class="language-plaintext highlighter-rouge">/data2/</code> is the partition where persistent data resides, like some configurations. And, in <code class="language-plaintext highlighter-rouge">data2/custom_lang</code> is where custom languages get uploaded.</p><p><a href="../../assets/img/fortigate-symlink/Pasted image 20250426194823.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/Pasted image 20250426194823.png" alt="" /></a></p><p><strong>What attackers did is modify the symbolic link <code class="language-plaintext highlighter-rouge">/migadmin/lang/custom</code> to point to the root of the FortiGate, so it is possible to remotely access all the files using VPN-SSL’s <code class="language-plaintext highlighter-rouge">/lang/custom</code> PATH</strong>❤️</p><p>Here is an example of a compromised FortiGate.</p><ul><li><code class="language-plaintext highlighter-rouge">/lang/custom/data/etc/ssh/ssh_host_rsa_key</code></ul><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_19-58-51.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_19-58-51.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_19-59-19.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_19-59-19.png" alt="" /></a></p><p>And of course, downloading the configuration.</p><ul><li><code class="language-plaintext highlighter-rouge">/lang/custom/data/config/sys_global.conf.gz</code></ul><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png" alt="" /></a></p><p><a href="../../assets/img/fortigate-symlink/image_2025-04-26_20-01-30.png" target="_blank"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="../../assets/img/fortigate-symlink/image_2025-04-26_20-01-30.png" alt="" /></a></p><p>And the best about that is it survived updates ✨.</p><h1 id="bypassing-the-patch-tool-and-internet-analysis">Bypassing the Patch, tool, and internet analysis🤓</h1><p>After the details were clear, we managed to bypass the patch. Using <code class="language-plaintext highlighter-rouge">strstr</code> is not the best idea… Also built a tool to analyze the status of FortiGate devices remotely.</p><p>All of this continues in the following post at ITRESIT Labs:</p><ul><li><a href="https://labs.itresit.es/2026/02/11/fortigate-symlink-persistence-method-patch-bypass-cve-2025-68686/">https://labs.itresit.es/2026/02/11/fortigate-symlink-persistence-method-patch-bypass-cve-2025-68686/</a></ul></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/en/'>en</a>, <a href='/categories/fortigate/'>FortiGate</a>, <a href='/categories/vpn/'>VPN</a>, <a href='/categories/symlink/'>Symlink</a>, <a href='/categories/persistence/'>Persistence</a>, <a href='/categories/cve-2025-68686/'>CVE-2025-68686</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/honeypot/" class="post-tag no-text-decoration" >honeypot</a> <a href="/tags/vpn/" class="post-tag no-text-decoration" >vpn</a> <a href="/tags/fortigate/" class="post-tag no-text-decoration" >fortigate</a> <a href="/tags/intelligence/" class="post-tag no-text-decoration" >intelligence</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=FortiGate Symlink Persistence Method - Peter Gabaldon&url=https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=FortiGate Symlink Persistence Method - Peter Gabaldon&u=https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=FortiGate Symlink Persistence Method - Peter Gabaldon&url=https://petergabaldon.github.io/posts/FortiGate-Symlink-Attack/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-lastmod" class="post"> <span>Recent Update</span><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/FortiGate-VPN-SSL-Honeypot/">FortiGate VPN-SSL Honeypot</a><li><a href="/posts/Bypass-Azure-Admin-Approval-Mode-Enumeration/">Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating</a><li><a href="/posts/Finding-TeamViewer-0days-Part-1/">Finding TeamViewer 0days - Part I</a><li><a href="/posts/Finding-TeamViewer-0days-Part-3/">Finding TeamViewer 0days - Part III</a><li><a href="/posts/Diamond-And-Sapphire-Tickets/">Diamond And Sapphire Tickets</a></ul></div><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/cybersecurity/">cybersecurity</a> <a class="post-tag" href="/tags/pentesting/">pentesting</a> <a class="post-tag" href="/tags/red-team/">red team</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/cve-2024-7479/">CVE-2024-7479</a> <a class="post-tag" href="/tags/cve-2024-7481/">CVE-2024-7481</a> <a class="post-tag" href="/tags/kerberos/">kerberos</a> <a class="post-tag" href="/tags/tv-2024-1006/">tv-2024-1006</a> <a class="post-tag" href="/tags/zdi-24-1289/">ZDI-24-1289</a> <a class="post-tag" href="/tags/zdi-24-1290/">ZDI-24-1290</a></div></div></div><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/FortiGate-VPN-SSL-Honeypot/"><div class="card-body"> <span class="timeago small" > Aug 2, 2025 <i class="unloaded">2025-08-02T00:00:00+02:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>FortiGate VPN-SSL Honeypot</h3><div class="text-muted small"><p> FortiGate VPN-SSL Honeypot The following blog post contains an example of running and configuring the FortiGate VPN-SSL Honeypot project. This project can be found in Github here: https://githu...</p></div></div></a></div><div class="card"> <a href="/posts/Playing-With-Windows-Security-Part-1/"><div class="card-body"> <span class="timeago small" > Feb 4, 2021 <i class="unloaded">2021-02-04T00:00:00+01:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Playing With Windows Security - Part 1</h3><div class="text-muted small"><p> Windows Authentication. In this first part of Windows hacking we will be covering aspects related on how Windows authentication works. I’m coming from Linux ecosystem so sometimes I will try to co...</p></div></div></a></div><div class="card"> <a href="/posts/Playing-With-Windows-Security-Part-2/"><div class="card-body"> <span class="timeago small" > Feb 21, 2021 <i class="unloaded">2021-02-21T00:00:00+01:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Playing With Windows Security - Part 2</h3><div class="text-muted small"><p> Kerberos Authentication Protocol After the first part at which we talked about authentication in Windows and explained how attacks like Pass-The-Hash works. At this part we are going to analyse Ke...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/FortiGate-VPN-SSL-Honeypot/" class="btn btn-outline-primary"><p>FortiGate VPN-SSL Honeypot</p></a> <span class="btn btn-outline-primary disabled"><p>-</p></span></div></div></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script> <script type="text/javascript"> const imgs = document.querySelectorAll('.post-content img'); const observer = lozad(imgs); observer.observe(); </script><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2026 <a href="https://twitter.com/PeterGabaldon">Pedro Gabaldon</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy/" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-xl-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/cybersecurity/">cybersecurity</a> <a class="post-tag" href="/tags/pentesting/">pentesting</a> <a class="post-tag" href="/tags/red-team/">red team</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/cve-2024-7479/">CVE 2024 7479</a> <a class="post-tag" href="/tags/cve-2024-7481/">CVE 2024 7481</a> <a class="post-tag" href="/tags/kerberos/">kerberos</a> <a class="post-tag" href="/tags/tv-2024-1006/">tv 2024 1006</a> <a class="post-tag" href="/tags/zdi-24-1289/">ZDI 24 1289</a> <a class="post-tag" href="/tags/zdi-24-1290/">ZDI 24 1290</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://petergabaldon.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"><div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>{categories}</div><div><i class="fa fa-tag fa-fw"></i>{tags}</div></div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>' }); </script>
