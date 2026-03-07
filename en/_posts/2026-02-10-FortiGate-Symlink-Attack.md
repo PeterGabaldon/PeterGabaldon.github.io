@@ -23,9 +23,9 @@ Some days later Fortinet published a post in FortiGuard with some information ab
 
 If you had one of these versions: **FortiOS 7.4, 7.2, 7.0, 6.4** the symlink was supposedly removed by AV/IPS engine. 
 
-And in these versions: **FortiOS 7.6.2, 7.4.7, 7.2.11 & 7.0.17, 6.4.16** the update removes the symlink and also a patch was added in the VPN-SSL two prevent the exploitation.
+And in these versions: **FortiOS 7.6.2, 7.4.7, 7.2.11 & 7.0.17, 6.4.16** the update removes the symlink and also a patch was added in the VPN-SSL to prevent the exploitation.
 
-It is very important to note that this is **not a *0day***. This method was used by TA **after** compromising FortiGates units with other vulns. In the post-exp phase they used to created the symlink that could survive updates of the FGT and thus giving the remote (if VPN-SSL is enabled) read-only access to root filesystem 😎.
+It is very important to note that this is **not a *0day***. This method was used by TA **after** compromising FortiGates units with other vulns. In the post-exp phase they used to create the symlink that could survive updates of the FGT and thus giving the remote (if VPN-SSL is enabled) read-only access to root filesystem 😎.
 
 # Abstract💣
 
@@ -60,7 +60,7 @@ For example, in order to download the configuration:
 Now, I encourage you to read the full post if curious about the details. (Spoiler: the patch can be bypassed).
 # Reversing and Patch-Diffing🛠
 
-Once we were aware of this method we started to analyze the path and to understand the how this method works.
+Once we were aware of this method we started to analyze the path and to understand how this method works.
 
 First of all we downloaded FortiGate VM from Fortinet in order to extract `rootfs` and `ramdisk` from VMDK. If you are not aware, `rootfs` is encrypted by a custom method and `flatkc` is responsible for decrypting it at boot time.
 
@@ -363,7 +363,7 @@ And the best about that is it survived updates ✨.
 
 # Bypassing the Patch, tool, and internet analysis🤓
 
-After the details were clear, we managed to bypass the patch. Using `strstr` is not the best idea... Also built a tool to analyze the status of FortiGate devices remotely. 
+After the details were clear, we managed to bypass the patch. Using `strstr` is not the best idea... :). Also built a tool to analyze the status of FortiGate devices remotely. 
 
 All of this continues in the following post at ITRESIT Labs: 
 - [https://labs.itresit.es/2026/02/11/fortigate-symlink-persistence-method-patch-bypass-cve-2025-68686/](https://labs.itresit.es/2026/02/11/fortigate-symlink-persistence-method-patch-bypass-cve-2025-68686/)
