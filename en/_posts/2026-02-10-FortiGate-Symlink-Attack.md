@@ -11,7 +11,7 @@ tags: [honeypot, vpn, fortigate, intelligence]
 
 ## Analysis and Exploitation of FortiGate Symlink Persistence Method
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](/assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
 ## Background📚
 
 Around April 2025 Fortinet started warning customers that a Threat Actor (TA) continued to have remote read-only access to filesystem after patching FortiGates (FGT) units. This was achieved by a path in the VPN-SSL. Basically, requesting some route (we will see it later in the post) in the VPN-SSL, it allowed to **access root file system remotely and without authentication**.
@@ -55,7 +55,7 @@ TA used to modify this symlink to point to the root of the filesystem so it was 
 For example, in order to download the configuration:
 - `/lang/custom/data/config/sys_global.conf.gz`
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](/assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
 
 Now, I encourage you to read the full post if curious about the details. (Spoiler: the patch can be bypassed).
 ## Reversing and Patch-Diffing🛠
@@ -73,7 +73,7 @@ Recently Fortinet modified the encryption process. *RandoriSec* documented the u
 
 After launching FortiGates VMs in VMware (v74.7 and v7.4.6) the VMDKs were extracted. There are multiple VMDKs because FortiGate uses various disks (and each of them various partitions), but the first one contains the root filesystem in the first partition.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426170504.png)](../../assets/img/fortigate-symlink/Pasted image 20250426170504.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426170504.png)](/assets/img/fortigate-symlink/Pasted image 20250426170504.png){:target="_blank"}
 
 After getting them, the next step is to mount the VMDK and extract `flatkc` and the items of root filesystem contained in `rootfs.gz`
 
@@ -117,7 +117,7 @@ drwx------  2 root  root     16384 Jan 20 19:44 lost+found
 d-wxr----t  3 root  root      4096 Apr  3 23:59 web-ui
 ```
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426171741.png)](../../assets/img/fortigate-symlink/Pasted image 20250426171741.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426171741.png)](/assets/img/fortigate-symlink/Pasted image 20250426171741.png){:target="_blank"}
 
 Extracting and decrypting `rootfs` will allow us to retrieve `init` binary and analyze FortiGate VPN-SSL to study the patch.
 
@@ -227,7 +227,7 @@ In order to analyze the differences I like to use `Bindiff` and `BinExport` plug
 
 One important thing is that because of the size of `init` binary it is necessary to launch `Ghidra` with more memory. This can be easily achieved modifying `MAXMEM` in `ghidrarun`.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426181602.png)](../../assets/img/fortigate-symlink/Pasted image 20250426181602.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426181602.png)](/assets/img/fortigate-symlink/Pasted image 20250426181602.png){:target="_blank"}
 
 ```
 $ cat ghidraRun
@@ -255,19 +255,19 @@ MAXMEM=16G
 
 After generating the `BinExports` we can move on to `BinDiff` and `IDA`.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426183646.png)](../../assets/img/fortigate-symlink/Pasted image 20250426183646.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426183646.png)](/assets/img/fortigate-symlink/Pasted image 20250426183646.png){:target="_blank"}
 
 The modified functions that add the check for the VPN-SSL paths are the following. These corresponds to two VPN-SSL handlers.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426184038.png)](../../assets/img/fortigate-symlink/Pasted image 20250426184038.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426184038.png)](/assets/img/fortigate-symlink/Pasted image 20250426184038.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426184108.png)](../../assets/img/fortigate-symlink/Pasted image 20250426184108.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426184108.png)](/assets/img/fortigate-symlink/Pasted image 20250426184108.png){:target="_blank"}
 
 Fortinet is now using in two VPN-SSL handlers a routine to resolve the *Symlink* and check that it points to the corresponding path.
 
 `sub_272F3A0`
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426184425.png)](../../assets/img/fortigate-symlink/Pasted image 20250426184425.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426184425.png)](/assets/img/fortigate-symlink/Pasted image 20250426184425.png){:target="_blank"}
 
 This function basically takes a single argument—a file path (`src`)—and returns 1 if that file lives directly under one of two special language‐resource directories, and 0 otherwise. It calls `realpath` this way `realpath(dirname(path), resolved);`.
 
@@ -275,19 +275,19 @@ This routine is called in two VPN-SSL handlers when the following path is reques
 
 `sub_196C120` (`default_handler`)
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426184915.png)](../../assets/img/fortigate-symlink/Pasted image 20250426184915.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426184915.png)](/assets/img/fortigate-symlink/Pasted image 20250426184915.png){:target="_blank"}
 
 If the check of the symbolic link is not OK a `403 Forbidden` will be returned.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426185243.png)](../../assets/img/fortigate-symlink/Pasted image 20250426185243.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426185243.png)](/assets/img/fortigate-symlink/Pasted image 20250426185243.png){:target="_blank"}
 
 `sub_1990D90` (`sslvpn_zip_handler`)
 
 Basically, the same check.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426185138.png)](../../assets/img/fortigate-symlink/Pasted image 20250426185138.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426185138.png)](/assets/img/fortigate-symlink/Pasted image 20250426185138.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426185213.png)](../../assets/img/fortigate-symlink/Pasted image 20250426185213.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426185213.png)](/assets/img/fortigate-symlink/Pasted image 20250426185213.png){:target="_blank"}
 
 So, now we know that Fortinet is checking for queries with `/lang/custom` 😊.
 
@@ -296,7 +296,7 @@ Now moving into exploitation 🔥.
 
 The `/lang/` path can be queried in the VPN-SSL without authentication. For example, you can request `/lang/sp.json` (Spanish 🇪🇸).
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426192344.png)](../../assets/img/fortigate-symlink/Pasted image 20250426192344.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426192344.png)](/assets/img/fortigate-symlink/Pasted image 20250426192344.png){:target="_blank"}
 
 The following languages are incorporated in the VPN-SSL (`/migadmin/lang`).
 
@@ -329,35 +329,35 @@ end
 
 After that it is possible to upload a `JSON` file like we saw before and configure it in the VPN-SSL.
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_19-41-23.png)](../../assets/img/fortigate-symlink/image_2025-04-26_19-41-23.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_19-41-23.png)](/assets/img/fortigate-symlink/image_2025-04-26_19-41-23.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_19-41-05.png)](../../assets/img/fortigate-symlink/image_2025-04-26_19-41-05.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_19-41-05.png)](/assets/img/fortigate-symlink/image_2025-04-26_19-41-05.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_19-40-05.png)](../../assets/img/fortigate-symlink/image_2025-04-26_19-40-05.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_19-40-05.png)](/assets/img/fortigate-symlink/image_2025-04-26_19-40-05.png){:target="_blank"}
 
 Later, in the VPN-SSL portal it can be selected.
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_19-42-25.png)](../../assets/img/fortigate-symlink/image_2025-04-26_19-42-25.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_19-42-25.png)](/assets/img/fortigate-symlink/image_2025-04-26_19-42-25.png){:target="_blank"}
 
 As we saw in the languages directory of VPN-SSL (`/migadmin/lang`) there is always `custom` pointing to `/data2/custom_lang`. The `/data2/` is the partition where persistent data resides, like some configurations. And, in `data2/custom_lang` is where custom languages get uploaded.
 
-[![](../../assets/img/fortigate-symlink/Pasted image 20250426194823.png)](../../assets/img/fortigate-symlink/Pasted image 20250426194823.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/Pasted image 20250426194823.png)](/assets/img/fortigate-symlink/Pasted image 20250426194823.png){:target="_blank"}
 
 **What attackers did is modify the symbolic link `/migadmin/lang/custom` to point to the root of the FortiGate, so it is possible to remotely access all the files using VPN-SSL's `/lang/custom` PATH**❤️
 
 Here is an example of a compromised FortiGate.
 - `/lang/custom/data/etc/ssh/ssh_host_rsa_key`
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_19-58-51.png)](../../assets/img/fortigate-symlink/image_2025-04-26_19-58-51.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_19-58-51.png)](/assets/img/fortigate-symlink/image_2025-04-26_19-58-51.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_19-59-19.png)](../../assets/img/fortigate-symlink/image_2025-04-26_19-59-19.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_19-59-19.png)](/assets/img/fortigate-symlink/image_2025-04-26_19-59-19.png){:target="_blank"}
 
 And of course, downloading the configuration.
 - `/lang/custom/data/config/sys_global.conf.gz`
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](/assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-symlink/image_2025-04-26_20-01-30.png)](../../assets/img/fortigate-symlink/image_2025-04-26_20-01-30.png){:target="_blank"}
+[![](/assets/img/fortigate-symlink/image_2025-04-26_20-01-30.png)](/assets/img/fortigate-symlink/image_2025-04-26_20-01-30.png){:target="_blank"}
 
 And the best about that is it survived updates ✨.
 

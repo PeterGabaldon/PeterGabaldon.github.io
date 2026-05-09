@@ -31,31 +31,31 @@ When starting to reverse the client I thought that we had a very nice clue. We k
 
 So, the first thing was to find this string. A simple search string in IDA returned the following cross reference.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619222157.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619222157.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619222157.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619222157.png){:target="_blank"}
 
 Pulling back we can reach where the final compare is being made, checking if the response send by the client matches the correct value.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619223033.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619223033.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619223033.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619223033.png){:target="_blank"}
 
 ### Following the process
 
 When studying the process, the following function was the responsible for returning the expected output.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619225558.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619225558.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619225558.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619225558.png){:target="_blank"}
 
 I will show the process that this functions follows.
 
 This function is a helper that actually calls another one.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619230143.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619230143.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619230143.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619230143.png){:target="_blank"}
 
 We finally ends (after another call to a helper), calling the function that performs all the magic. 
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619230317.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619230317.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619230317.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619230317.png){:target="_blank"}
 
 We then end in a loop that calls one function in its body.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619230443.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619230443.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619230443.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619230443.png){:target="_blank"}
 
 What is this function peforming?
 
@@ -94,11 +94,11 @@ In this example execution of the exploit we received the following challenge.
 
 `03 f2 2f ac bc 14 1e e3 42 84 22 e9 55 cc e3 e3`
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619230952.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619230952.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619230952.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619230952.png){:target="_blank"}
 
 But, when analyzing the parameters passed to the MD5 hashing core function we see the following.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619231327.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619231327.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619231327.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619231327.png){:target="_blank"}
 
 So TV concatenates the challenge the following bytes
 
@@ -114,6 +114,6 @@ So basically in order the authenticate we just need to *MD5(CHALLENGE+STATIC KEY
 
 After that we then need to send the *ControlIPC* indicating the correct PID. I believe that any current process PID could be valid, but I have not tested it. In the exploit the current process PID is sent. Indicating a PID for a non-existent process will make it fail.
 
-[![](../../assets/img/finding-tv-0days-2/Pasted image 20240619232449.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619232449.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-2/Pasted image 20240619232449.png)](/assets/img/finding-tv-0days-2/Pasted image 20240619232449.png){:target="_blank"}
 
 In Part 3 we will have fun writing the exploit and finally use it to elevate privileges.

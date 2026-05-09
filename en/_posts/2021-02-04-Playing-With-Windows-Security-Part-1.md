@@ -31,7 +31,7 @@ In Linux, abstracting the whole PAM process, the authentication is simple. You h
 ### Login on Windows
 On Windows, **Winlogon** is responsible of the login process. Linux PAM modules are the equivalente of Windows Credential Providers. Each time a user is logged in, a Logon session is created and a corresponding Access Token which is associted to that Logon session. This Access Token object has some interested things, that we will analys it in more detailt in the next chapter. Each logon session creates at least an Access Token. We can list currently logon sessions using Sysinternals' "logonsessions64.exe". In the image below an example is given listing currently logon sessions on a Windows 10 machine. As you can see user **Peter** has two interactive sessions while actually this user has logged in once. That is because the UAC and because this user is an Administrator, it will be explained better in *Mandatory Integrity Control* section. Each session has an id, a LUID -Locally unique identifier-, LSA, the Local Security Authority, uses this information to map each logon session with its credentials stored in memory. Each process created inherit the *Acces Token* of the process calling [CreateProcess](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa){:target="\_blank"} or a specific token with [CreateProcessWithToken](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createprocesswithtokenw){:target="\_blank"}.
 
-[![Logon sessions](../../assets/img/playing-win-sec/logon-sessions.png)](../../assets/img/playing-win-sec/logon-sessions.png){:target="\_blank"}
+[![Logon sessions](/assets/img/playing-win-sec/logon-sessions.png)](/assets/img/playing-win-sec/logon-sessions.png){:target="\_blank"}
 
 ### LSA
 
@@ -67,7 +67,7 @@ A **Windows Access Token** is and object structure containing security informati
 * If it is an impersonation or a primary token.
 
 In Linux everything is a "file", so tasks suchs as changing the timezone are implemented as files. Normal file permissions checks are used to things like that.
-[![Linux localtime](../../assets/img/playing-win-sec/linux-local-time.png)](../../assets/img/playing-win-sec/linux-local-time.png){:target="\_blank"}
+[![Linux localtime](/assets/img/playing-win-sec/linux-local-time.png)](/assets/img/playing-win-sec/linux-local-time.png){:target="\_blank"}
 To change the localtime, one have to change the **/etc/localtime** symbolic link.
 
 Windows does not follow that philosophy, that is why we have **Privileges**, system-related actions are divided into privileges and an access token has a list of privileges. [Here](https://docs.microsoft.com/en-us/windows/win32/secauthz/privilege-constants){:target="\_blank"} is a list of all possible privileges. One important to mention is **SE_DEBUG_PRIVILEGE** wich gives the ability to debug another process and thus giving the ability to read its memory, for example. That is how *mimikatz* can dump the security information stored on *lssas.exe* process or how some DLL injection techniques writes to other process memory. When accessing a securable object, Windows will use the SID of the user and the SIDs of the groups to check access vs the DACL, when trying to perform a system-related task, like shutting down the computer, privileges will determine.
@@ -75,7 +75,7 @@ Windows does not follow that philosophy, that is why we have **Privileges**, sys
 A token can be a primaty token or impersonation token, the primary token is the token associated with the process that was inherited at creation time. A process can impersonta another one, it can perform a task with the security context of another one. This can be abused, that is how *meterpreter getsystem* can elevate to *NT Authority\System*, for example.
 
 We can view the security context of a process using *Sysinternals Process Explorer*.
-[![Process explorer example](../../assets/img/playing-win-sec/proc-exp-example.png)](../../assets/img/playing-win-sec/proc-exp-example.png){:target="\_blank"}
+[![Process explorer example](/assets/img/playing-win-sec/proc-exp-example.png)](/assets/img/playing-win-sec/proc-exp-example.png){:target="\_blank"}
 
 For example, the *explorer.exe* process with PID 1364 was created through the logon session 55908, that process got a primary access token with the SID of the user Peter, belonging to the groups showed on the image and with some privileges like the one needed for shuting down the computer -although it is currently disabled-.
 
@@ -211,7 +211,7 @@ The ASCII character set is reduced because of uppercasing, if the password conta
 
 ### LM and NTLMv1
 The following diagram ilustrates how LM/NTLMv1 calculates the response.
-[![NTLMv1 diagram](../../assets/img/playing-win-sec/ntlmv1-diagram.png)](../../assets/img/playing-win-sec/ntlmv1-diagram.png){:target="\_blank"}
+[![NTLMv1 diagram](/assets/img/playing-win-sec/ntlmv1-diagram.png)](/assets/img/playing-win-sec/ntlmv1-diagram.png){:target="\_blank"}
 
 **LM/NTLMv1** has some weaknesses:
 * Any type of salt involved, same hash with same challenge always produce the same response.
@@ -220,7 +220,7 @@ The following diagram ilustrates how LM/NTLMv1 calculates the response.
 
 ### NTLMv2
 The following diagram ilustrates the flow of calculating the response.
-[![NTLMv2 diagram](../../assets/img/playing-win-sec/ntlmv2-diagram.png)](../../assets/img/playing-win-sec/ntlmv2-diagram.png){:target="\_blank"}
+[![NTLMv2 diagram](/assets/img/playing-win-sec/ntlmv2-diagram.png)](/assets/img/playing-win-sec/ntlmv2-diagram.png){:target="\_blank"}
 NTLMv2 mitigates some of the frailties of NTLMv1. For example, now the same password and same challenges produce differents responses because of timestamp in "Client challenge 2". This mitigates replay attacks too. Also NTLMv2 is more robusts vs brute force attacks because of using **HMAC-MD5**.
 
 ### Hardening
@@ -230,18 +230,18 @@ You should disable NTLMv1, LM and LM hashes, a modern Windows ecosystem can use 
 * Run secpol.msc
 * Enable **Network security: Do not store LAN Manager hash value on next password change.** at **Local Policies->Security Options**.
 
-[![Disabling LM hash](../../assets/img/playing-win-sec/group-policy-no-lm.png)](../../assets/img/playing-win-sec/group-policy-no-lm.png){:target="\_blank"}
+[![Disabling LM hash](/assets/img/playing-win-sec/group-policy-no-lm.png)](/assets/img/playing-win-sec/group-policy-no-lm.png){:target="\_blank"}
 
 #### Disabling LM hash using a registry entry:
 * Create a **NoLMHash** key at **HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa**
 
-[![Disabling LM hash](../../assets/img/playing-win-sec/registry-no-lm.png)](../../assets/img/playing-win-sec/registry-no-lm.png){:target="\_blank"}
+[![Disabling LM hash](/assets/img/playing-win-sec/registry-no-lm.png)](/assets/img/playing-win-sec/registry-no-lm.png){:target="\_blank"}
 
 #### Disabling NTLMv1 and LM
 * Run secpol.msc
 * Modify **Network Security: LAN Manager authentication level.** at **Local Policies->Security Options**
 
-[![Disabling LM and NTLMv1](../../assets/img/playing-win-sec/group-policy-no-ntlmv1.png)](../../assets/img/playing-win-sec/group-policy-no-ntlmv1.png){:target="\_blank"}
+[![Disabling LM and NTLMv1](/assets/img/playing-win-sec/group-policy-no-ntlmv1.png)](/assets/img/playing-win-sec/group-policy-no-ntlmv1.png){:target="\_blank"}
 There are five levels, described in this [table](https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level#possible-values){:target="\_blank"}.
 
 Also it is possible to establish this policy using the registry, a key **LmCompatibilityLevel** should be created at **HKLM\System\CurrentControlSet\Control\Lsa** with a value between 0-5 as described in the table referenced before.
@@ -249,7 +249,7 @@ Also it is possible to establish this policy using the registry, a key **LmCompa
 ## Pass-The-Hash
 As explained before in the Single-Sign-On section **lsass** stores credentials in memory, that way performing authentication to a network resource is possible without reentering credentials because **lsass** will try using the one's it has in memory. Thus, if you pwn a machine and dump hashes and another machine in the network uses the same password you don't need to crack the hash, that hash can be used to pivot and move laterally -and vertically if the user is privileged on the target machine- on the network performing a **Pass-The-Hash** attack. In the following figure a **Pass-The-Hash** example using **mimikatz** is performed from the attacker machine. Remember that we dumped the user **Peter** NT hash previously: 7ce21f17c0aee7fb9ceba532d0546ad6.
 
-[![Pass-The-Hash with mimikatz](../../assets/img/playing-win-sec/mimikatz-pth.gif)](../../assets/img/playing-win-sec/mimikatz-pth.gif){:target="\_blank"}
+[![Pass-The-Hash with mimikatz](/assets/img/playing-win-sec/mimikatz-pth.gif)](/assets/img/playing-win-sec/mimikatz-pth.gif){:target="\_blank"}
 
 Mimikatz inyected at **lsass** memory the credentials of ther user **Peter** and launched a new cmd with that access token, when trying to list the C drive in the background the NTLM authentication took place and because we have the correct NT hash NTLM authentication was successful, listing the contents of the C drive and viwing the content of "test.txt".
 
@@ -257,10 +257,10 @@ Mimikatz inyected at **lsass** memory the credentials of ther user **Peter** and
 Famous bruteforce tools like **Hashcat** or **John the Ripper** can crack hashes or NTLM authentication responses.
 
 **Hashcat** example of cracking the NT hash of user **Peter**:
-[![Hashcat crack example](../../assets/img/playing-win-sec/hashcat-crack.png)](../../assets/img/playing-win-sec/hashcat-crack.png){:target="\_blank"}
+[![Hashcat crack example](/assets/img/playing-win-sec/hashcat-crack.png)](/assets/img/playing-win-sec/hashcat-crack.png){:target="\_blank"}
 
 **John** example of cracking the NT hash of user **Peter**:
-[![John crack example](../../assets/img/playing-win-sec/john-crack.png)](../../assets/img/playing-win-sec/john-crack.png){:target="\_blank"}
+[![John crack example](/assets/img/playing-win-sec/john-crack.png)](/assets/img/playing-win-sec/john-crack.png){:target="\_blank"}
 
 ## Conclusion
 Having a hash on a Windows environment with NTLM authentication enabled is almost always equivalent to having a password, PTH is so effective to perform lateral movement on a Windows network and even escalate privileges if some user with higher privileges is reusing a password. In the next part we will study Kerberos key concepts and attacks to that authentication protocol: Overpass-The-Hash, Pass-The-Ticket, Golden Ticket, Silver Ticket, Kerberoasting and AS-Reproasting.

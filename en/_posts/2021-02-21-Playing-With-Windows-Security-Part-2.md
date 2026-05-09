@@ -99,7 +99,7 @@ After that, the server will respond with the response: `AS-REP`. Considering the
 3. User Token
 
 The following diagram shows the flow:
-[![Logon sessions](../../assets/img/playing-win-sec-2/kerb-auth.png)](../../assets/img/playing-win-sec-2/kerb-auth.png){:target="\_blank"}
+[![Logon sessions](/assets/img/playing-win-sec-2/kerb-auth.png)](/assets/img/playing-win-sec-2/kerb-auth.png){:target="\_blank"}
 
 ### Accesing services (after succesful authentication)
 
@@ -121,7 +121,7 @@ The KDC validates this information, and if it is correct it constructs the TGS, 
 
 The following diagram ilustrates the exchanges:
 
-[![Logon sessions](../../assets/img/playing-win-sec-2/service-auth.png)](../../assets/img/playing-win-sec-2/service-auth.png){:target="\_blank"}
+[![Logon sessions](/assets/img/playing-win-sec-2/service-auth.png)](/assets/img/playing-win-sec-2/service-auth.png){:target="\_blank"}
 
 Once you have the TGS you can present it the service, sending an `AP-REQ` containing the TGS, getting access to it, for example, to an HTTP(s) server.
 

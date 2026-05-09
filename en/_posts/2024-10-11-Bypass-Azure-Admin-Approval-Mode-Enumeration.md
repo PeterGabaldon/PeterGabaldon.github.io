@@ -21,17 +21,17 @@ With this technique we leverage Microsoft well-known apps that has some permissi
 
 During an Azure pentest, it's likely that the tenant has administrator approval mode enabled for external application permissions, hindering enumeration tasks—for example, through Microsoft Graph.
 
-[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203825.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203825.png){:target="_blank"}
+[![](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203825.png)](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203825.png){:target="_blank"}
 
 When you try to enumerate groups, users, and other elements with Microsoft Graph, you'll find that it's not possible when using Microsoft's default application.
 
-[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png){:target="_blank"}
+[![](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png)](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png){:target="_blank"}
 
 ### Abusing well-known Microsoft Apps with permissions already granted
 
 However, it's possible to leverage other default Microsoft applications, such as **SharePoint Online Web Client Extensibility** (08e18876-6177-487e-b8b5-cf950c1e598c), since it has certain permissions granted by default. It has the default permissions that can be seen in the following image. I think that there are other applications available, but I have been using **SharePoint Online Web Client Extensibility**. 
 
-[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204007.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204007.png){:target="_blank"}
+[![](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204007.png)](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204007.png){:target="_blank"}
 
 Take a look at your tenant and you will find this application owned by Microsoft and with the permissions shown granted.
 
@@ -94,7 +94,7 @@ PS C:\> Get-MgContext | select -ExpandProperty Scopes
 [...]
 ```
 
-[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png){:target="_blank"}
+[![](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png)](/assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png){:target="_blank"}
 
 ### Using Azure PowerShell
 
@@ -104,11 +104,11 @@ Using this application you can also obtain a Microsoft Graph token. Although, th
 
 To connect to Microsoft Graph with using a token issued using **Azure PowerShell** just run `Connect-AzAccount; Connect-MgGraph -AccessToken (Get-AzAccessToken -ResourceTypeName MSGraph -AsSecureString).Token`. 
 
-[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png){:target="_blank"}
+[![](/assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png)](/assets/img/bypass-azure-admin-approval-mode-enumeration/GbJq5naWAAUxs2i.png){:target="_blank"}
 
 The available scope is shown in the figure below.
 
-[![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png){:target="_blank"}
+[![](/assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png)](/assets/img/bypass-azure-admin-approval-mode-enumeration/2024-11-16 19_49_54-Window.png){:target="_blank"}
 
 
 And in this way, we can now continue with the enumeration tasks 😜.

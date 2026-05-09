@@ -95,13 +95,13 @@ server {
 
 After that, the Honey will be accessible.
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170818.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170818.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170818.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170818.png){:target="_blank"}
 
 Just for your information, once it is published to internet, in a few days it will appea in internet service mappers like `Shodan` or `Censys`.
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170920.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170920.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170920.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731170920.png){:target="_blank"}
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png){:target="_blank"}
 
 ## Parsing 
 
@@ -349,7 +349,7 @@ Dumping IPs exploiting Symlink Persistence Method to bad_ips_symlink.txt
 🗑️  Logs truncated – parse.sh complete.
 ```
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png){:target="_blank"}
 
 ## Scheduled Reporting
 
@@ -424,7 +424,7 @@ Here is an example of a malicious IP being reported.
 
 - [https://www.virustotal.com/gui/ip-address/23.234.94.233/community](https://www.virustotal.com/gui/ip-address/23.234.94.233/community)
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173618.png){:target="_blank"}
 
 And the following is the configuration yaml file for reporting to OTX.
 
@@ -449,7 +449,7 @@ And here you can find an example of the Pulse.
 
 - [https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2](https://otx.alienvault.com/pulse/68570c45f7889b52b9f051f2)
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731173810.png){:target="_blank"}
 
 I also recommend to run the Reporting modules periodically via the `systemd` timer and service. Here is my full `systemd` service run by the timer every 30 minutes which, apart for the aforementioned periodic parsing, will run (in its respective `venvs`) the parsing scripts.
 
@@ -502,7 +502,7 @@ It will produce an email with the following information.
 - ⛔ Bad IPs
 - 💥 Exfiltrated Credentials
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png){:target="_blank"}
 
 ## Counter-Intelligence (Deliberately Exfiltrate Credentials)
 
@@ -531,7 +531,7 @@ Ideas to exfiltrate credentials
 
 For example, I exfiltrated fake credentials in a Pastebin post and some days after an attempt was performed using them.
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png){:target="_blank"}
 ## Symlink Exploit Detections
 
 The Honeypot also detects attempt to use the Symlink persistence method in FortiGate units ([https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).](https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).)
@@ -542,7 +542,7 @@ For example, https://www.onyphe.io/ scans the internet finding vulnerable applia
 
 - [https://x.com/PedroGabaldon/status/1937439245482000793](https://x.com/PedroGabaldon/status/1937439245482000793)
 
-[![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png){:target="_blank"}
+[![](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png)](/assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731175140.png){:target="_blank"}
 
 
 

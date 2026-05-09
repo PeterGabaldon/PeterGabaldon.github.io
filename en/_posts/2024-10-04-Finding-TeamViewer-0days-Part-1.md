@@ -17,7 +17,7 @@ Thus a privilege escalation USER to KERNEL was possible thanks to TeamViewer.
 
 As we will see, one of the best approaches is to use the well-known technique *BYOD, Bring Your Own Vulnerable Driver* to load a valid signed driver into Windows Kernel and then exploit it in order to perform privileged actions from user level, like changing the token of an arbitrary process with a privileged one.
 
-[![](../../assets/img/finding-tv-0days-1/logo.webp)](../../assets/img/finding-tv-0days-1/logo.webp){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/logo.webp)](/assets/img/finding-tv-0days-1/logo.webp){:target="_blank"}
 ### Background
 
 First of all, some background in order to understand some later things. This vulnerability is not exploitable when TeamViewer is just run on the system, it is necessary to install TeamViewer.
@@ -45,7 +45,7 @@ Curiosity killed the cat.
 
 So, the question is, how is that implemented :)? And the journey researching started.
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617222935.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617222935.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617222935.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617222935.png){:target="_blank"}
 
 ### First Steps
 
@@ -77,24 +77,24 @@ Notice last line, where it is possible to observer that a helper binary is being
 Interesting, a SYSTEM process is being created that installs the driver given an *INF* file. This process ends calling `UpdateDriverForPlugAndPlayDevicesA` without verification of the signature (*Catalog File*).
 - [https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa](https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa){:target="_blank"}
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617225325.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617225325.png){:target="_blank"}
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617225340.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617225340.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617225325.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617225325.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617225340.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617225340.png){:target="_blank"}
 
 Where that parameters come from? 
 
 I started then investigating the IPC communication. After some *API Monitor* (what a f\*cking such great tool) hours. I will not bore you with the trial and error of different filters and time studying IPC communication. We now know that is using *5939/tcp*, so lets analyze *Networking APIs*.
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617225946.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617225946.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617225946.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617225946.png){:target="_blank"}
 
 When launching TV it is possible to see that it is using a proprietary protocol. One can think at first that it is encrypted or something like that. But not, TV is not using encryption on its communication.
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617230110.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617230110.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617230110.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617230110.png){:target="_blank"}
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617230549.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617230549.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617230549.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617230549.png){:target="_blank"}
 
 The interesting part is, what happens when the button of *Install VPN Driver* is clicked?
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617231058.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617231058.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617231058.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617231058.png){:target="_blank"}
 
 Oh, oh, Houston...
 
@@ -104,7 +104,7 @@ So the idea was clear, if we send an IPC message to the SYSTEM service indicatin
 
 Here is another view from Wireshark.
 
-[![](../../assets/img/finding-tv-0days-1/Pasted image 20240617231517.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617231517.png){:target="_blank"}
+[![](/assets/img/finding-tv-0days-1/Pasted image 20240617231517.png)](/assets/img/finding-tv-0days-1/Pasted image 20240617231517.png){:target="_blank"}
 
 (Not just the INF parameter is send, but I am skipping the other part as the most relevant one is the INF parameter. Notice the Event message *Local\\DriverInstallFinishEvent*).
 ### IPC Communication Protocol
@@ -245,7 +245,7 @@ Again, we start with a similar header.
 	- In bytes 0x58 to 0x5b we have the major number of the version. 15 in this case
 	- In bytes 0x63 to 0x66 we have the medium number of the version.
 	- In bytes 0x6e to 0x6f we have the last number of the version.
-- [![](../../assets/img/finding-tv-0days-1/Pasted image 20240621210706.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240621210706.png){:target="_blank"}
+- [![](/assets/img/finding-tv-0days-1/Pasted image 20240621210706.png)](/assets/img/finding-tv-0days-1/Pasted image 20240621210706.png){:target="_blank"}
 - The rest of the body I do not known what it does, it was necessary only to write the correct PID.
 - In this case the tail is a bit different because it contains the following bytes after the common one, `ff 04 00 00 00 95 d4 04 31`.
 - At the end there it is a generated identifier that is used in later messages.

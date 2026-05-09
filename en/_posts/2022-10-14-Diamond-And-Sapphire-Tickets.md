@@ -62,13 +62,13 @@ The KDC will generate a new session key, encrypt it twice, once with the session
 A diagram about the process.
 
 
-[![U2U-1](../../assets/img/diamond-sapphire-tickets/u2u_1.png)](../../assets/img/diamond-sapphire-tickets/u2u_1.png){:target="\_blank"}
+[![U2U-1](/assets/img/diamond-sapphire-tickets/u2u_1.png)](/assets/img/diamond-sapphire-tickets/u2u_1.png){:target="\_blank"}
 
-[![U2U-2](../../assets/img/diamond-sapphire-tickets/u2u_2.png)](../../assets/img/diamond-sapphire-tickets/u2u_2.png){:target="\_blank"}
+[![U2U-2](/assets/img/diamond-sapphire-tickets/u2u_2.png)](/assets/img/diamond-sapphire-tickets/u2u_2.png){:target="\_blank"}
 
-[![U2U-3](../../assets/img/diamond-sapphire-tickets/u2u_3.png)](../../assets/img/diamond-sapphire-tickets/u2u_3.png){:target="\_blank"}
+[![U2U-3](/assets/img/diamond-sapphire-tickets/u2u_3.png)](/assets/img/diamond-sapphire-tickets/u2u_3.png){:target="\_blank"}
 
-[![U2U-4](../../assets/img/diamond-sapphire-tickets/u2u_4.png)](../../assets/img/diamond-sapphire-tickets/u2u_4.png){:target="\_blank"}
+[![U2U-4](/assets/img/diamond-sapphire-tickets/u2u_4.png)](/assets/img/diamond-sapphire-tickets/u2u_4.png){:target="\_blank"}
 
 But this is the theory defined in Kerberos 5 protocol specification. Take a look at [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth).
 
@@ -78,13 +78,13 @@ But this is the theory defined in Kerberos 5 protocol specification. Take a look
 
 Finally, how is U2U implementad (at least) in Windows? I have not tested another implementations.
 
-[![W-ICON](../../assets/img/diamond-sapphire-tickets/windows_icon.png)](../../assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
+[![W-ICON](/assets/img/diamond-sapphire-tickets/windows_icon.png)](/assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
 The implementation, as defined here [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01), specifies that the option **ENC-TKT-IN-SKEY** has to be specified and an additional ticket has to be included in the TGS-REQ.
 
 An example showing this at network level:
 
-[![P4](../../assets/img/diamond-sapphire-tickets/prac4.png)](../../assets/img/diamond-sapphire-tickets/prac4.png){:target="\_blank"}
+[![P4](/assets/img/diamond-sapphire-tickets/prac4.png)](/assets/img/diamond-sapphire-tickets/prac4.png){:target="\_blank"}
 
 We can take a look at the modified version of *ticketer.py* by [Charlie Shutdown](https://twitter.com/_nwodtuhs), to see how this option and the additional ticket is included.
 
@@ -113,22 +113,22 @@ Using *ticketer* like above we request a Sapphire Ticket.
 python3 ./ticketer.py -request -impersonate 'administrator' -domain 'contoso.local' -user 'emp.1' -password '1234' -aesKey '0c83d045c7428f2fee556ba0bbdf0109b3e39d38104b415fd91def363910b4b2' -domain-sid 'S-1-5-21-877380313-3945528518-819751691' 'ignored'
 ```
 
-[![P1](../../assets/img/diamond-sapphire-tickets/prac1.png)](../../assets/img/diamond-sapphire-tickets/prac1.png){:target="\_blank"}
+[![P1](/assets/img/diamond-sapphire-tickets/prac1.png)](/assets/img/diamond-sapphire-tickets/prac1.png){:target="\_blank"}
 
 If we take a look at the ticket we can see that we have had a ticket that has the PAC of the request to impersonate, Administrator.
 
-[![P2-1](../../assets/img/diamond-sapphire-tickets/prac2_1.png)](../../assets/img/diamond-sapphire-tickets/prac2_1.png){:target="\_blank"}
-[![P2-3](../../assets/img/diamond-sapphire-tickets/prac2_2.png)](../../assets/img/diamond-sapphire-tickets/prac2_2.png){:target="\_blank"}
+[![P2-1](/assets/img/diamond-sapphire-tickets/prac2_1.png)](/assets/img/diamond-sapphire-tickets/prac2_1.png){:target="\_blank"}
+[![P2-3](/assets/img/diamond-sapphire-tickets/prac2_2.png)](/assets/img/diamond-sapphire-tickets/prac2_2.png){:target="\_blank"}
 
 But this ticket is "real". For real I mean that we have not crafted the ticket totally offline. What happened under the hood is that we authenticated in the domain with the user *emp.1*.
 
-[![P3](../../assets/img/diamond-sapphire-tickets/prac3.png)](../../assets/img/diamond-sapphire-tickets/prac3.png){:target="\_blank"}
+[![P3](/assets/img/diamond-sapphire-tickets/prac3.png)](/assets/img/diamond-sapphire-tickets/prac3.png){:target="\_blank"}
 
 And later, in the S4U2Self+U2U we specified the username to get a service ticket for, *administr*ator*, plus we requested the service ticket for a user (to ourselves), performing *U2U*.
 
 So the KDC gave us a Service Ticket encrypted with our Kerberos Key, *emp.1*. We can decrypt the ST, get the PAC. Then, in our TGT, modify the PAC with the administrator PAC we obtained before and re-encrypt and re-sign it. The adventage is that we crafted a TGT for the administrator user using previous "things" generated by the KDC.
 
-[![MEME](../../assets/img/diamond-sapphire-tickets/meme.jpeg)](../../assets/img/diamond-sapphire-tickets/meme.jpeg){:target="\_blank"}
+[![MEME](/assets/img/diamond-sapphire-tickets/meme.jpeg)](/assets/img/diamond-sapphire-tickets/meme.jpeg){:target="\_blank"}
 
 Looking at the [code](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L518) of [Charlie Shutdown](https://twitter.com/_nwodtuhs) with his extension of *Ticketer*.
 
