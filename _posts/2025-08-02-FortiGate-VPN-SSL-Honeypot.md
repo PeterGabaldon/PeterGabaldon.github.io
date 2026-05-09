@@ -2,8 +2,6 @@
 
 layout: post
 title: FortiGate VPN-SSL Honeypot
-lang: en
-lang-ref: fortigate-vpn-ssl-honeypot
 categories: [FortiGate, VPN, Honeypot]
 tags: [honeypot, vpn, fortigate, intelligence]
 

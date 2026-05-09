@@ -2,8 +2,6 @@
 
 layout: post
 title: Finding TeamViewer 0days - Part III
-lang: en
-lang-ref: finding-tv-0days-3
 categories: [Windows security, TeamViewer]
 tags: [windows, cybersecurity, CVE-2024-7479, CVE-2024-7481, ZDI-24-1289, ZDI-24-1290, tv-2024-1006, red team, pentesting]
 

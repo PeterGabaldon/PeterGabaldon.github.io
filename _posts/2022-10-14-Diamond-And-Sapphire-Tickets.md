@@ -1,25 +1,23 @@
 ---
 
 layout: post
-title: Diamond Y Sapphire Tickets
-lang: es
-lang-ref: diamonds-sapphire-tickets
+title: Diamond And Sapphire Tickets
 categories: [Windows security]
 tags: [windows, cybersecurity, kerberos, red team, pentesting]
 
 ---
 
-## Kerberos Diamond y Sapphire Tickets
+## Kerberos Diamond and Sapphire Tickets
 
-Como sabes, uno de los enfoques para la persistencia en un entorno Windows Active Directory son las conocidas técnicas Golden Ticket y Silver Ticket. En post explotación, una vez que se tienen suficientes privilegios en un DC, es posible volcar *ntds.dit* y obtener *krbtgt* Kerberos Keys. Como sabes, sus claves Kerberos se utilizan para cifrar los TGT y firmar los PAC. Entonces, al disponer de las claves de Kerberos, es posible construir cualquier TGT y/o PAC. Tener las claves de Kerberos de algún SPN nos permite falsificar STs para ese servicio.
+As you may known, one of the approaches for persistence in a Windows Active Directory are the well-known techniques Golden Ticket and Silver Ticket. In the post-explotation phase, once you have enough privilege in a DC you could dump *ntds.dit* and get *krbtgt* Kerberos Keys. As you know, its Kerberos keys are used for encrypting TGTs and signing PAC. So, having them it is possible to craft any TGT and/or PAC. Having Kerberos keys of some SPN allows us to forge STs for that service.
 
-El problema de los Golden Ticket y Silver es que son fácilmente detectables. Una vez que el KDC/servicio recibe un TGT/ST y los registros se reciben en el SIEM (u otras alternativas, podría ser directamente en el DC, por ejemplo), es fácil detectar y alertar que este TGT/ST en realidad no fue creado por el KDC. Por lo tanto, las soluciones de monitoreo capturarán Golden y Silver Tickets.
+The problem about Golden and Silver Tickets is that they are easily detectable. Once the KDC/service receives a TGT/ST it and logs are received in your SIEM it is easy to detect and alert that this TGT/ST was not actually created by the KDC. So, Monitoring Solutions will easy catch Golden and Silver Tickets.
 
-## Dimaond Ticket
+## Diamond Ticket
 
-Andrew Schwartz de TrustedSec y Charlie Clark de Semperis ([https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/](https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/)) inventaron una variación del ataque Diamond PAC. La idea es simple, si se conocen las claves Kerberos de *krbtgt*, simplemente solicitando cualquier TGT y es posible modificar el PAC de forma arbitaria (volveiendo a cifrarlo y volviendo a firmarlo finalmente).
+Andrew Schwartz at TrustedSec and Charlie Clark at Semperis ([https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/](https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/)) invented a variation of Diamond PAC attack. The idea is simple, if you know *krbtgt* Kerberos keys just request any TGT and modify the PAC by demand (re-encrypting and re-signing it).
 
-Ticketer y Rubeus pueden realizar este ataque.
+Ticketer and Rubeus can perform this attack.
 
 ```bash
 ticketer.py -request -domain 'DOMAIN.FQDN' -user 'domain_user' -password 'password' -nthash 'krbtgt/service NT hash' -aesKey 'krbtgt/service AES key' -domain-sid 'S-1-5-21-...' -user-id '1337' -groups '512,513,518,519,520' 'baduser'
@@ -29,37 +27,37 @@ ticketer.py -request -domain 'DOMAIN.FQDN' -user 'domain_user' -password 'passwo
 Rubeus.exe diamond /domain:DOMAIN /user:USER /password:PASSWORD /dc:DOMAIN_CONTROLLER /enctype:AES256 /krbkey:HASH /ticketuser:USERNAME /ticketuserid:USER_ID /groups:GROUP_IDS
 ```
 
-Esta técnica es más sigilosa porque el TGT es real, fue creado por el KDC pero solo se modificó el PAC. Aunque este enfoque es más sigiloso, también puede (y será) detectado por las soluciones de monitoreo.
+This technique is more stealthy because te TGT is real, it was created by the KDC but only the PAC was modified. Although this approach is more stealthy it will be detected by monitoring solutions too.
 
 ## Sapphire Ticket
 
-Una nueva técnica es Sapphire Ticket. Creado por [Charlie Shutdown](https://twitter.com/_nwodtuhs), este enfoque es más sigiloso. Puede crear un TGT haciéndose pasar por cualquier usuario ensamblando TGT real y PAC real combinando S4U2Self + U2U. Esta nueva técnica me llamó la atención y quería estudiar y mostrar cómo funciona en sus entrañas.
+One brand new technique is Sapphire Ticket. Created by [Charlie Shutdown](https://twitter.com/_nwodtuhs) this approach is more stealthy. You can create a TGT impersonating any user assembling real TGT and real PAC combining S4U2Self + U2U. This new technique attracted my attention and I wanted to study and show how it works under the hood.
 
-Charlie extendió Ticketer de Impacket para agregar este ataque.
+He extended Ticketer from Impacket to add this attack.
 
 ```bash
 ticketer.py -request -impersonate 'domainadmin' -domain 'DOMAIN.FQDN' -user 'domain_user' -password 'password' -aesKey 'krbtgt AES key' -domain-sid 'S-1-5-21-...' 'ignored'
 ```
 
-Se ignorarán los argumentos requeridos *-domain-sid* y el parámetro común de usuario a suplantar.
+Required arguments *-domain-sid* and (common) impersonate user param will be ignored.
 
-### Detalles Técnicos
+### Technical Details
 
-Sapphire Tickets se basa en el *trick* S4U2Self + U2U. Usando U2U es posible solicitar S4U2Self sin tener un SPN. S4U2Self es uno de los mensajes en la extensión del protocolo S4U. S4U2Self permite obtener un ticket en nombre de otro usuario para sí mismo. Imagina un servicio con *Constrained Delegation* habilitada, pero un usuario se autentica mediante NTLM. El Servicio no puede delegar al usuario a otro servicio porque no tiene el ST del usuario (necesario para realizar S4U2Proxy). En este escenario, el servicio envía al KDC un KRB_TGS_REQ solicitando un ST de ese usuario para si mismo. De modo que, el servicio ahora tiene un ST para sí mismo en nombre del usuario.
+Sapphire Tickets technique is based in the S4U2Self + U2U trick. Using U2U is possible to request S4U2Self without having a SPN. S4U2Self is one of the messages in the S4U protocol extension. S4U2Self allows to obtainer a ticket in behalf of another user to itself. Imagine a service with Kerberos Constrained Delegation Enabled, but a user authenticates to it using NTLM. The Service cannot delegate the user to another service because it does not have the ST of the user. In that scenario, the service send to the KDC a KRB_TGS_REQ requesting a ST of that user to itself. So, the service now has a ST to itself with the user authentication information.
 
-Entonces, la idea es: solicitamos S4U2Self, obteniendo un ST como si el usuario se hubiera autenticado contra nosotros. Este ST tiene el PAC del usuario. Entonces, disponemos de su PAC porque podemos descifrarlo usando las claves Kerberos *krbtgt*. Ahora podemos modificar el PAC de un TGT existente y volver a cifrarlo y volver a firmarlo con las claves Kerberos *krbtgt*. La idea es así de simple.
+So the idea is: We request S4U2Self, getting ST to us as if the user has authenticated versus us. This ST has the user's PAC. So, we have his PAC because we can decrypt it using *krbtgt* Kerberos keys. We can now modify the PAC of and existing TGT and re-encrypt and re-sign it with *krbtgt* Kerberos keys. The idea is that simple.
 
 ### U2U
 
-Imaginemos que un usuario quiere ofrecer algún servicio en su Máquina de Escritorio. Debido a que no es una máquina servidor, debemos presuponer que está más expuesta, por ejemplo, a ataques de red, no está bastionada, etc. En definitiva, deberíamos considerarla menos segura y que no puede almacenar una clave de servicio. Dado ese escenario, la especificación Kerberos 5 trajo una nueva idea. Básicamente, U2U ofrece al usuario la posibilidad de alojar un servicio sin ser realmente un servicio o tener un Principal, por lo que no tiene la responsabilidad de almacenar una clave maestra de larga duración. De esa forma, el KDC es nuevamente responsable de almacenar las claves "maestras" y el usuario puede entregar el servicio deseado. La idea es que dos usuarios puedan autenticarse y obtener una clave de sesión común.
+Imagine that a user wants to offer some service in his Desktop Machine. Because it is not a Server Machine we should presuppose that is more exposed to, for example, network attacks, not hardened, etc. We should consider it less secure definitly and can not contain a Service Key. Giving that scenario the Kerberos 5 specification brought a new idea. Basically, U2U goes about giving a user the possibility to host a service without actually being a service or having a principal, thus not having to responsability to store a long-lived master key. That way, the KDC is again responsible of storing "master" keys and the user can deliver its desired service. The idea is that two users could authenticate themselves and derive a common session key.
 
-Digamos que hay dos usuarios: el usuario A, que actúa como servidor, y el usuario B, que actúa como cliente.
+Let's say there are two users: User A, acting as server, and User B, acting as client.
 
-El usuario A, el servidor, podría dar al usuario B su TGT. Debido a que el usuario B no conoce la clave de sesión de Kerberos del usuario A, en realidad no puede hacerse pasar por el usuario A en el realm. El usuario B va al KDC y pregunta por U2U, dando ambos tickets, tickets del usuario A y del usuario B.
+User A, the server, could give User B his TGT. Because User B does not know Kerberos Session Key of User A, he cannot impersonate User A in the realm actually. User B goes to the KDC and asks for U2U, givin both tickets, User A and User B tickets.
 
-El KDC generará una nueva clave de sesión, la cifrará dos veces, una con la clave de sesión del Usuario A y la otra con la clave de sesión del Usuario B. Finalmente, ambos usuarios pueden usar la clave de sesión recién generada para descifrarla, cada uno con su clave de sesión. De esa forma, el Usuario A y el Usuario B se autenticaron y derivaron la nueva clave de sesión que pueden usar para brindar confidencialidad y/o integridad a cualquier canal seguro que usaran. El usuario A no expone ninguna credencial "maestra" en su máquina de escritorio, solo la clave de sesión de corta duración.
+The KDC will generate a new session key, encrypt it twice, once with the session key of User A and the other one with the session key of User B. Finally, both users can use the newly generated session key decrypting it, each with its session key. That way, User A and User B had authenticated themselves and derived the new session key that they can use to provide confidentiality and/or integrity to whatever secure channel the will use. The User A does not expose any "master" credential in his desktop machine, only the short-lived session key.
 
-Un diagrama sobre el proceso.
+A diagram about the process.
 
 
 [![U2U-1](/assets/img/diamond-sapphire-tickets/u2u_1.png)](/assets/img/diamond-sapphire-tickets/u2u_1.png){:target="\_blank"}
@@ -70,44 +68,44 @@ Un diagrama sobre el proceso.
 
 [![U2U-4](/assets/img/diamond-sapphire-tickets/u2u_4.png)](/assets/img/diamond-sapphire-tickets/u2u_4.png){:target="\_blank"}
 
-Pero esta es la teoría definida en la especificación de Kerberos 5. Echa un vistazo aquí [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth).
+But this is the theory defined in Kerberos 5 protocol specification. Take a look at [http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth](http://www.di-srv.unisa.it/~ads/corso-security/www/CORSO-0001/kerberos/ref/kerberos-faq.html#u2uauth).
 
-**En resumen**, en lugar de especificar un SPN, indicamos al KDC que utilice la Clave de Sesión de un Usuario. Para ello, embebemos su TGT y especificamos su Name en el Service Name.
+**To summarize**, instead of specifying an SPN, we indicate the KDC to use the Session Key of a User. For that, we embed his TGT and spcify its Name in the Service Name.
 
 #### Windows Implementation
 
-Por último, ¿cómo se implementa U2U (al menos) en Windows? No he probado otras implementaciones.
+Finally, how is U2U implementad (at least) in Windows? I have not tested another implementations.
 
 [![W-ICON](/assets/img/diamond-sapphire-tickets/windows_icon.png)](/assets/img/diamond-sapphire-tickets/windows_icon.png){:target="\_blank"}
 
-La implementación, como se define aquí [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01), especifica que la opción **ENC-TKT-IN-SKEY** tiene que ser especificada y un ticket adicional tiene que ser incluido en el TGS-REQ.
+The implementation, as defined here [https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-01), specifies that the option **ENC-TKT-IN-SKEY** has to be specified and an additional ticket has to be included in the TGS-REQ.
 
-Un ejemplo que muestra esto a nivel de red:
+An example showing this at network level:
 
 [![P4](/assets/img/diamond-sapphire-tickets/prac4.png)](/assets/img/diamond-sapphire-tickets/prac4.png){:target="\_blank"}
 
-Podemos echar un vistazo a la modificación de *ticketer.py* de [Charlie Shutdown](https://twitter.com/_nwodtuhs), para ver cómo se incluye esta opción y el ticket adicional.
+We can take a look at the modified version of *ticketer.py* by [Charlie Shutdown](https://twitter.com/_nwodtuhs), to see how this option and the additional ticket is included.
 
-Líneas 491 y 507.
+Lines 491 and 507.
 
 [https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L491](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L491)
 [https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L507](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L507)
 
 ### S4U2Self
 
-En la extensión S4U Kerberos de Windows, S4U2Self permite que un servicio obtenga un ticket de servicio para sí mismo en nombre del usuario. Básicamente, se trata de un ticket de servicio, ya que el usuario se habría autenticado en el servicio que solicita S4U2Self. Para solicitar S4U2Self, la cuenta debe tener al menos un nombre principal de servicio.
+In the S4U Kerberos Extension, S4U2Self permits a service getting a Service Ticket to itself on behalf of the user. Basically, that is a Service Ticket as is the user would have authenticated to the service requesting S4U2Self. To request S4U2Self the account has to have at least one Service Principal Name.
 
-Usando *paDATA pA-FOR-USER* podemos solicitar S4U2Self.
+Using *paDATA pA-FOR-USER* we can request S4U2Self.
 
-### Juntemos las piezas del puzzle
+### Putting all together
 
-Entonces, la idea es: nos autenticamos en el dominio con cualquier cuenta, solicitamos S4U2Self, pero no somos un servicio (es decir, no tenemos un SPN). En el Nombre del Servicio especificamos el usuario que vamos a usar para autenticar, realizando U2U. El resultado es que el KDC generará un ticket de servicio para nosotros en nombre del usuario. Ahora, tenemos el PAC del usuario objetivo :).
+Thus, the idea is: we authenticate in the domain with any account, request S4U2Self, but, we are not a service (I mean, we do not have an SPN). At the Service Name we specify the user that we have use to authenticate, performing U2U. The result is that the KDC will generate a Service Ticket to us on behalft of the user. Now, we have the PAC of the target user :).
 
-### Ejemplo Práctico
+### Practical Example
 
-Estamos en la fase de post y tenemos las claves Kerberos (krbtgt).
+We are at the post phase and we have The Kerberos (krbtgt) Keys.
 
-Usando *ticketer* como anteriormente, solicitamos un Sapphire Ticket.
+Using *ticketer* like above we request a Sapphire Ticket.
 
 ```bash
 python3 ./ticketer.py -request -impersonate 'administrator' -domain 'contoso.local' -user 'emp.1' -password '1234' -aesKey '0c83d045c7428f2fee556ba0bbdf0109b3e39d38104b415fd91def363910b4b2' -domain-sid 'S-1-5-21-877380313-3945528518-819751691' 'ignored'
@@ -115,28 +113,28 @@ python3 ./ticketer.py -request -impersonate 'administrator' -domain 'contoso.loc
 
 [![P1](/assets/img/diamond-sapphire-tickets/prac1.png)](/assets/img/diamond-sapphire-tickets/prac1.png){:target="\_blank"}
 
-Si echamos un vistazo al ticket podemos ver que hemos tenido un ticket que tiene el PAC de la petición de suplantar, Administrador.
+If we take a look at the ticket we can see that we have had a ticket that has the PAC of the request to impersonate, Administrator.
 
 [![P2-1](/assets/img/diamond-sapphire-tickets/prac2_1.png)](/assets/img/diamond-sapphire-tickets/prac2_1.png){:target="\_blank"}
 [![P2-3](/assets/img/diamond-sapphire-tickets/prac2_2.png)](/assets/img/diamond-sapphire-tickets/prac2_2.png){:target="\_blank"}
 
-Pero este ticket es "real". Real de verdad, quiero decir que no hemos creado el ticket totalmente offline. Lo que sucedió es que nos autenticamos en el dominio con el usuario *emp.1*.
+But this ticket is "real". For real I mean that we have not crafted the ticket totally offline. What happened under the hood is that we authenticated in the domain with the user *emp.1*.
 
 [![P3](/assets/img/diamond-sapphire-tickets/prac3.png)](/assets/img/diamond-sapphire-tickets/prac3.png){:target="\_blank"}
 
-Y luego, en S4U2Self+U2U especificamos el nombre de usuario para obtener un ticket de servicio para, *administrador*, además solicitamos el ticket de servicio para un usuario (para nosotros), realizando *U2U*.
+And later, in the S4U2Self+U2U we specified the username to get a service ticket for, *administr*ator*, plus we requested the service ticket for a user (to ourselves), performing *U2U*.
 
-Entonces, el KDC nos dio un ticket de servicio encriptado con nuestra clave Kerberos, *emp.1*. Podemos descifrar el ST, obtener el PAC. Luego, en nuestro TGT modificamos el PAC con el PAC de administrador que obtuvimos antes y lo volvemos a encriptar y volver a firmar. La ventaja es que creamos un TGT para el usuario administrador utilizando "cosas" anteriores generadas por el KDC.
+So the KDC gave us a Service Ticket encrypted with our Kerberos Key, *emp.1*. We can decrypt the ST, get the PAC. Then, in our TGT, modify the PAC with the administrator PAC we obtained before and re-encrypt and re-sign it. The adventage is that we crafted a TGT for the administrator user using previous "things" generated by the KDC.
 
 [![MEME](/assets/img/diamond-sapphire-tickets/meme.jpeg)](/assets/img/diamond-sapphire-tickets/meme.jpeg){:target="\_blank"}
 
-Echando un vistazo al [codigo](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L518) de [Charlie Shutdown](https://twitter.com/_nwodtuhs) con su extension de *Ticketer*.
+Looking at the [code](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L518) of [Charlie Shutdown](https://twitter.com/_nwodtuhs) with his extension of *Ticketer*.
 
-Podemos ver como extrae el PAC.
+We can see how he extracts the PAC.
 
 ```python
 [...]
-            # 1. S4U2Self + U2U
+# 1. S4U2Self + U2U
             logging.info('\tRequesting S4U2self+U2U to obtain %s\'s PAC' % self.__options.impersonate)
             tgs, cipher, oldSessionKey, sessionKey = self.getKerberosS4U2SelfU2U()
 
@@ -150,9 +148,9 @@ Podemos ver como extrae el PAC.
 [...]            
 ```
 
-Y el PAC del TGT que ya tenemos es (casi) cambiado como se haría normalmente en *Ticketer* con el nuevo PAC obtenido de S4U2Self+U2U tras actualizar *pacInfos*.
+And that PAC of the TGT we already have is (almost) changed like always in *Ticketer* with the new PAC obtained from S4U2Self+U2U by updating *pacInfos*.
 
-Además, algunas banderas siempre están configuradas: Forwadable, Proxiable, Renewable, Pre-Authent
+Additionally, some flags are always set: Forwadable, Proxiable, Renewable, Pre-Authent
 
 ```python
 [...]
@@ -237,11 +235,11 @@ else:
 [...]
 ```
 
-## Eventos
+## Events
 
-El DC genera los siguientes eventos.
+The DC generates the following events.
 
-Primero el de autenticación debido a AS_REQ, ID de evento **4768**.
+Firt the authentication one because of AS_REQ, Event ID **4768**.
 
 ```
 A Kerberos authentication ticket (TGT) was requested.
@@ -275,7 +273,7 @@ Certificate information is only provided if a certificate was used for pre-authe
 Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.
 ```
 
-Y es seguido inmediatamente por un ID de evento **4769** debido a la TGS_REQ usando S42Self+U2U se realiza inmediatamente para solicitar el ST.
+And it is followed inmediatly by a Event ID **4769** because TGS_REQ using S42Self+U2U is inmediately performed to request the ST.
 
 ```
 A Kerberos service ticket was requested.
@@ -306,11 +304,11 @@ This event can be correlated with Windows logon events by comparing the Logon GU
 Ticket options, encryption types, and failure codes are defined in RFC 4120.
 ```
 
-Como puede ver, la cuenta es Administrador y el servicio es la cuenta de equipo del KDC. Recuerda que no hemos especificado un SPN, usamos un nombre de usuario en el campo *sname*.
+As you can see, the account is Administrator and the service is the computer account of the KDC. Remeber that we did not specified a SPN, we used a Username in the *sname* field.
 
-Ahora, blue teamers investigad más y crear una Regla Sigma :P
+Now, blue teamers investigate more and create a Sigma Rule :P
 
-## Referencias:
+## References:
 
 1. [https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/](https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/)
 2. [https://learn.microsoft.com/es-es/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9](https://learn.microsoft.com/es-es/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9)

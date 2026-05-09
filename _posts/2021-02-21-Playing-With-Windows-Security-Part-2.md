@@ -2,8 +2,6 @@
 
 layout: post
 title: Playing With Windows Security - Part 2
-lang: en
-lang-ref: playing-windows-sec-2
 categories: [Windows security]
 tags: [windows, cybersecurity, kerberos, red team, pentesting]
 

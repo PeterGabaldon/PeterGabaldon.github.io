@@ -2,8 +2,6 @@
 
 layout: post
 title: FortiGate Symlink Persistence Method
-lang: en
-lang-ref: fortigate-symlink-persistence-method
 categories: [FortiGate, VPN, Symlink, Persistence, CVE-2025-68686]
 tags: [honeypot, vpn, fortigate, intelligence]
 

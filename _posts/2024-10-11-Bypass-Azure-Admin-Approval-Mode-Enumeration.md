@@ -2,8 +2,6 @@
 
 layout: post
 title: Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating
-lang: en
-lang-ref: bypass-azure-admin-approval-mode-enumeration
 categories: [Windows security, Azure, Microsoft]
 tags: [windows, cybersecurity, azure, microsoft, red team, pentesting]
 

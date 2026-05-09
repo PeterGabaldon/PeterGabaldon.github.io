@@ -2,8 +2,6 @@
 
 layout: post
 title: Playing With Windows Security - Part 1
-lang: en
-lang-ref: playing-windows-sec
 categories: [Windows security]
 tags: [windows, cybersecurity, mimikatz, pass-the-hash, red team, pentesting]
 
