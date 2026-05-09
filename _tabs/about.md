@@ -15,6 +15,7 @@ Graduate in Computer Engineering from the University of Murcia with 5 years of p
 I have experience in:
 
  - Security audits and Red Teaming
+ - Vuln Research
  - Deployment, configuration, and management of SOC with Azure Sentinel technology
  - Deployment, configuration, management, and investigation with CrowdStrike
  - Hardening of Microsoft environments (Azure/M365 and on-premises AD)
