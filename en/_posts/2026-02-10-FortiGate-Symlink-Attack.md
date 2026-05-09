@@ -9,10 +9,10 @@ tags: [honeypot, vpn, fortigate, intelligence]
 
 ---
 
-# Analysis and Exploitation of FortiGate Symlink Persistence Method
+## Analysis and Exploitation of FortiGate Symlink Persistence Method
 
 [![](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
-# Background📚
+## Background📚
 
 Around April 2025 Fortinet started warning customers that a Threat Actor (TA) continued to have remote read-only access to filesystem after patching FortiGates (FGT) units. This was achieved by a path in the VPN-SSL. Basically, requesting some route (we will see it later in the post) in the VPN-SSL, it allowed to **access root file system remotely and without authentication**.
 
@@ -27,7 +27,7 @@ And in these versions: **FortiOS 7.6.2, 7.4.7, 7.2.11 & 7.0.17, 6.4.16** the upd
 
 It is very important to note that this is **not a *0day***. This method was used by TA **after** compromising FortiGates units with other vulns. In the post-exp phase they used to create the symlink that could survive updates of the FGT and thus giving the remote (if VPN-SSL is enabled) read-only access to root filesystem 😎.
 
-# Abstract💣
+## Abstract💣
 
 Basically, a TA (or maybe more than one I don´t know) used to modify a symlink used by language configuration in the VPN-SSL. For years, the TA have used to apply this persistence method when compromising a FortiGate unit.
 
@@ -58,7 +58,7 @@ For example, in order to download the configuration:
 [![](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png)](../../assets/img/fortigate-symlink/image_2025-04-26_20-00-14.png){:target="_blank"}
 
 Now, I encourage you to read the full post if curious about the details. (Spoiler: the patch can be bypassed).
-# Reversing and Patch-Diffing🛠
+## Reversing and Patch-Diffing🛠
 
 Once we were aware of this method we started to analyze the path and to understand how this method works.
 
@@ -69,7 +69,7 @@ Recently Fortinet modified the encryption process. *RandoriSec* documented the u
 - [https://blog.randorisec.fr/fortigate-rootfs-decryption/](https://blog.randorisec.fr/fortigate-rootfs-decryption/)
 - [https://github.com/randorisec/decrypt-fortigate-rootfs](https://github.com/randorisec/decrypt-fortigate-rootfs)
 
-## Extracting and decrypting rootfs🔐
+### Extracting and decrypting rootfs🔐
 
 After launching FortiGates VMs in VMware (v74.7 and v7.4.6) the VMDKs were extracted. There are multiple VMDKs because FortiGate uses various disks (and each of them various partitions), but the first one contains the root filesystem in the first partition.
 
@@ -123,7 +123,7 @@ Extracting and decrypting `rootfs` will allow us to retrieve `init` binary and a
 
 The next step is to decrypt it using *Randorisec* tool.
 
-### A Digress
+#### A Digress
 
 ---
 
@@ -221,7 +221,7 @@ $ ls -la bin/init
 ```
 
 The same process was done with version 7.4.6 to patch-diff init binaries.
-# Patch-Analysis
+## Patch-Analysis
 
 In order to analyze the differences I like to use `Bindiff` and `BinExport` plugin in `Ghidra`.
 
@@ -292,7 +292,7 @@ Basically, the same check.
 So, now we know that Fortinet is checking for queries with `/lang/custom` 😊.
 
 Now moving into exploitation 🔥.
-# Exploitation🧨
+## Exploitation🧨
 
 The `/lang/` path can be queried in the VPN-SSL without authentication. For example, you can request `/lang/sp.json` (Spanish 🇪🇸).
 
@@ -361,7 +361,7 @@ And of course, downloading the configuration.
 
 And the best about that is it survived updates ✨.
 
-# Bypassing the Patch, tool, and internet analysis🤓
+## Bypassing the Patch, tool, and internet analysis🤓
 
 After the details were clear, we managed to bypass the patch. Using `strstr` is not the best idea... :). Also built a tool to analyze the status of FortiGate devices remotely. 
 

@@ -9,7 +9,7 @@ tags: [windows, cybersecurity, azure, microsoft, red team, pentesting]
 
 ---
 
-# Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating
+## Bypass Azure Admin Approval Mode for User Consent Workflow When Enumerating
 
 In this short blog post we will see a trick/technique to enumerate an Azure environment when the User App Consent Workflow is blocked and it is necessary to request permission to an administrator. After the administrator approves the consent the user can user the application.
 
@@ -17,7 +17,7 @@ When this mode is set an we attempt to enumerate groups/users/anything else when
 
 With this technique we leverage Microsoft well-known apps that has some permissions by default. Because they already has some permissions granted we can take advantage of them to get a token with the scopes we want, for example, *Group.Read.All* [https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadall](https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadall).
 
-## The Idea
+### The Idea
 
 During an Azure pentest, it's likely that the tenant has administrator approval mode enabled for external application permissions, hindering enumeration tasks—for example, through Microsoft Graph.
 
@@ -27,7 +27,7 @@ When you try to enumerate groups, users, and other elements with Microsoft Graph
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011203833.png){:target="_blank"}
 
-## Abusing well-known Microsoft Apps with permissions already granted
+### Abusing well-known Microsoft Apps with permissions already granted
 
 However, it's possible to leverage other default Microsoft applications, such as **SharePoint Online Web Client Extensibility** (08e18876-6177-487e-b8b5-cf950c1e598c), since it has certain permissions granted by default. It has the default permissions that can be seen in the following image. I think that there are other applications available, but I have been using **SharePoint Online Web Client Extensibility**. 
 
@@ -96,7 +96,7 @@ PS C:\> Get-MgContext | select -ExpandProperty Scopes
 
 [![](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png)](../../assets/img/bypass-azure-admin-approval-mode-enumeration/Pasted image 20241011204249.png){:target="_blank"}
 
-## Using Azure PowerShell
+### Using Azure PowerShell
 
 Another possibility, thanks to Bene ([https://x.com/m0lto_bene](https://x.com/m0lto_bene)), who pointed this out on Twitter: [https://x.com/PedroGabaldon/status/1844817792891039907](https://x.com/PedroGabaldon/status/1844817792891039907), is using **Azure PowerShell** [1950a258-227b-4e31-a9cf-717495945fc2](https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/governance/verify-first-party-apps-sign-in#application-ids-of-commonly-used-microsoft-applications).
 

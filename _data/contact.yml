@@ -8,8 +8,9 @@
   type: github
   icon: 'fab fa-github-alt'
 -
-  type: twitter
-  icon: 'fab fa-twitter'
+  type: x
+  icon: 'fa-brands fa-x-twitter'
+  url: 'https://x.com/PedroGabaldon'
 -
   type: email
   icon: 'fas fa-envelope'
@@ -24,10 +25,18 @@
 #   type: mastodon
 #   icon: 'fab fa-mastodon'   # icons powered by <https://fontawesome.com/>
 #   url:  ''                  # Fill with your mastodon account page
-# -
-#   type: linkedin
-#   icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
-#   url:  ''                  # Fill with your Linkedin homepage
+-
+  type: linkedin
+  icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
+  url:  'https://www.linkedin.com/in/pedro-gabaldon-julia/?locale=en-US'
+-
+  type: malware-bazaar
+  icon: 'fas fa-bug'
+  url: 'https://bazaar.abuse.ch/user/8188/'
+-
+  type: exploit-db
+  icon: 'fas fa-bomb'
+  url: 'https://www.exploit-db.com/?author=12128'
 # -
 #   type: stack-overflow
 #   icon: 'fab fa-stack-overflow'

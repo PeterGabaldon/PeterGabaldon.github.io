@@ -9,7 +9,7 @@ tags: [windows, cybersecurity, CVE-2024-7479, CVE-2024-7481, ZDI-24-1289, ZDI-24
 
 ---
 
-# Finding TeamViewer 0days. Part 3: Putting it all together. PARTY TIME :)!
+## Finding TeamViewer 0days. Part 3: Putting it all together. PARTY TIME :)!
 
 Now comes the interesting part. I am sorry about the two last lazy parts, but I wanted to explain the whole process :).
 
@@ -20,7 +20,7 @@ So the idea that we will review in this part is: we will spoof a TV client an as
 First of all, you can find the project here:
 - [https://github.com/PeterGabaldon/CVE-2024-7479_CVE-2024-7481](https://github.com/PeterGabaldon/CVE-2024-7479_CVE-2024-7481){:target="_blank"}
 
-## IMPORTANT NOTE
+### IMPORTANT NOTE
 
 This bypasses also TeamViewer option *Changes require administrative rights on this computer*.
 
@@ -28,10 +28,10 @@ This check is only effective via the GUI, as *TeamViewer options* is disabled wh
 
 [![](../../assets/img/finding-tv-0days-3/Pasted image 20240620220926.png)](../../assets/img/finding-tv-0days-3/Pasted image 20240620220926.png){:target="_blank"}
 
-## IMPORTANT NOTE II
+### IMPORTANT NOTE II
 
 The exploit is version dependant because of the IPC message where the client specified its PID and another data among the version. The version of the client must match the version of the SYSTEM service. The exploit must be modified (lines 140 to 143) in Main.cpp to the TeamViewer_service.exe version that is being targeted.
-## Coding the Exploit
+### Coding the Exploit
 
 We will start by defining the structures of the IPC messages involved.
 
@@ -77,7 +77,7 @@ After that the service start to sends us some messages about configuration, it t
 
 After that then comes the most interesting part. We are ready to send the *Driver Install* request.
 
-### IMPORTANT NOTE
+#### IMPORTANT NOTE
 
 I do not know why because I have not analyzed it, but it appears that not all paths works. At first I thought it was the length, but then tried different lengths and ones worked while others not. I think that maybe I got the service a bit crazy with so many tests. I ended up using the following path, **which can be created by a non privileged user by default in Windows**.
 
@@ -95,7 +95,7 @@ Then we are ready to send the magic :).
 
 [![](../../assets/img/finding-tv-0days-3/Pasted image 20240620200211.png)](../../assets/img/finding-tv-0days-3/Pasted image 20240620200211.png){:target="_blank"}
 
-## Elevating to Kernel
+### Elevating to Kernel
 
 At first I thought that we could use the INF to create an arbitrary service running as SYSTEM and elevate privileges that way. But the helper program of TV ends calling `UpdateDriverForPlugAndPlayDevicesA` without verification of the signature (*Catalog File*).
 - [https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa](https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-updatedriverforplugandplaydevicesa){:target="_blank"}

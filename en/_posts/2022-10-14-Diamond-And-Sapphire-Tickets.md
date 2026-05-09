@@ -9,13 +9,13 @@ tags: [windows, cybersecurity, kerberos, red team, pentesting]
 
 ---
 
-# Kerberos Diamond and Sapphire Tickets
+## Kerberos Diamond and Sapphire Tickets
 
 As you may known, one of the approaches for persistence in a Windows Active Directory are the well-known techniques Golden Ticket and Silver Ticket. In the post-explotation phase, once you have enough privilege in a DC you could dump *ntds.dit* and get *krbtgt* Kerberos Keys. As you know, its Kerberos keys are used for encrypting TGTs and signing PAC. So, having them it is possible to craft any TGT and/or PAC. Having Kerberos keys of some SPN allows us to forge STs for that service.
 
 The problem about Golden and Silver Tickets is that they are easily detectable. Once the KDC/service receives a TGT/ST it and logs are received in your SIEM it is easy to detect and alert that this TGT/ST was not actually created by the KDC. So, Monitoring Solutions will easy catch Golden and Silver Tickets.
 
-# Diamond Ticket
+## Diamond Ticket
 
 Andrew Schwartz at TrustedSec and Charlie Clark at Semperis ([https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/](https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/)) invented a variation of Diamond PAC attack. The idea is simple, if you know *krbtgt* Kerberos keys just request any TGT and modify the PAC by demand (re-encrypting and re-signing it).
 
@@ -31,7 +31,7 @@ Rubeus.exe diamond /domain:DOMAIN /user:USER /password:PASSWORD /dc:DOMAIN_CONTR
 
 This technique is more stealthy because te TGT is real, it was created by the KDC but only the PAC was modified. Although this approach is more stealthy it will be detected by monitoring solutions too.
 
-# Sapphire Ticket
+## Sapphire Ticket
 
 One brand new technique is Sapphire Ticket. Created by [Charlie Shutdown](https://twitter.com/_nwodtuhs) this approach is more stealthy. You can create a TGT impersonating any user assembling real TGT and real PAC combining S4U2Self + U2U. This new technique attracted my attention and I wanted to study and show how it works under the hood.
 
@@ -43,13 +43,13 @@ ticketer.py -request -impersonate 'domainadmin' -domain 'DOMAIN.FQDN' -user 'dom
 
 Required arguments *-domain-sid* and (common) impersonate user param will be ignored.
 
-## Technical Details
+### Technical Details
 
 Sapphire Tickets technique is based in the S4U2Self + U2U trick. Using U2U is possible to request S4U2Self without having a SPN. S4U2Self is one of the messages in the S4U protocol extension. S4U2Self allows to obtainer a ticket in behalf of another user to itself. Imagine a service with Kerberos Constrained Delegation Enabled, but a user authenticates to it using NTLM. The Service cannot delegate the user to another service because it does not have the ST of the user. In that scenario, the service send to the KDC a KRB_TGS_REQ requesting a ST of that user to itself. So, the service now has a ST to itself with the user authentication information.
 
 So the idea is: We request S4U2Self, getting ST to us as if the user has authenticated versus us. This ST has the user's PAC. So, we have his PAC because we can decrypt it using *krbtgt* Kerberos keys. We can now modify the PAC of and existing TGT and re-encrypt and re-sign it with *krbtgt* Kerberos keys. The idea is that simple.
 
-## U2U
+### U2U
 
 Imagine that a user wants to offer some service in his Desktop Machine. Because it is not a Server Machine we should presuppose that is more exposed to, for example, network attacks, not hardened, etc. We should consider it less secure definitly and can not contain a Service Key. Giving that scenario the Kerberos 5 specification brought a new idea. Basically, U2U goes about giving a user the possibility to host a service without actually being a service or having a principal, thus not having to responsability to store a long-lived master key. That way, the KDC is again responsible of storing "master" keys and the user can deliver its desired service. The idea is that two users could authenticate themselves and derive a common session key.
 
@@ -74,7 +74,7 @@ But this is the theory defined in Kerberos 5 protocol specification. Take a look
 
 **To summarize**, instead of specifying an SPN, we indicate the KDC to use the Session Key of a User. For that, we embed his TGT and spcify its Name in the Service Name.
 
-### Windows Implementation
+#### Windows Implementation
 
 Finally, how is U2U implementad (at least) in Windows? I have not tested another implementations.
 
@@ -93,17 +93,17 @@ Lines 491 and 507.
 [https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L491](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L491)
 [https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L507](https://github.com/ShutdownRepo/impacket/blob/sapphire-tickets/examples/ticketer.py#L507)
 
-## S4U2Self
+### S4U2Self
 
 In the S4U Kerberos Extension, S4U2Self permits a service getting a Service Ticket to itself on behalf of the user. Basically, that is a Service Ticket as is the user would have authenticated to the service requesting S4U2Self. To request S4U2Self the account has to have at least one Service Principal Name.
 
 Using *paDATA pA-FOR-USER* we can request S4U2Self.
 
-## Putting all together
+### Putting all together
 
 Thus, the idea is: we authenticate in the domain with any account, request S4U2Self, but, we are not a service (I mean, we do not have an SPN). At the Service Name we specify the user that we have use to authenticate, performing U2U. The result is that the KDC will generate a Service Ticket to us on behalft of the user. Now, we have the PAC of the target user :).
 
-## Practical Example
+### Practical Example
 
 We are at the post phase and we have The Kerberos (krbtgt) Keys.
 
@@ -237,7 +237,7 @@ else:
 [...]
 ```
 
-# Events
+## Events
 
 The DC generates the following events.
 
@@ -310,7 +310,7 @@ As you can see, the account is Administrator and the service is the computer acc
 
 Now, blue teamers investigate more and create a Sigma Rule :P
 
-# References:
+## References:
 
 1. [https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/](https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/)
 2. [https://learn.microsoft.com/es-es/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9](https://learn.microsoft.com/es-es/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9)

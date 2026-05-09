@@ -9,12 +9,12 @@ tags: [honeypot, vpn, fortigate, intelligence]
 
 ---
 
-# FortiGate VPN-SSL Honeypot
+## FortiGate VPN-SSL Honeypot
 
 The following blog post contains an example of running and configuring the FortiGate VPN-SSL Honeypot project. This project can be found in Github here:
 - [https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot](https://github.com/PeterGabaldon/Fortigate.VPN-SSL.Honeypot)
 
-# Description and Capabilities
+## Description and Capabilities
 
 A **deception honeypot** that mimics FortiGate VPN-SSL devices to trap brute force attempts, detect deliberately exfiltrated credentials for counter‑intelligence, and report malicious activity to external intelligence feeds (VT, OTX).
 
@@ -36,7 +36,7 @@ The Honeypot has the following capabilities currently implemented.
 
 The following sections will show an example of running the Honeypot in a cloud server among its capabilities.
 
-# Installation and Running the Honey
+## Installation and Running the Honey
 
 The Honeypot is written in Python and built around `docker-compose`.
 
@@ -103,7 +103,7 @@ Just for your information, once it is published to internet, in a few days it wi
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731171018.png){:target="_blank"}
 
-# Parsing 
+## Parsing 
 
 Honeypot data is logged at `data/log/honey/creds.log` and nginx data is logged at `data/log/nginx/access.log`.
 
@@ -351,7 +351,7 @@ Dumping IPs exploiting Symlink Persistence Method to bad_ips_symlink.txt
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250802124423.png){:target="_blank"}
 
-# Scheduled Reporting
+## Scheduled Reporting
 
 I recommend you to configure a service and a timer in `systemd` to periodically parse the information gathered at the Honeypot. The repository contains a template for it. Here is the one that I am using.
 
@@ -391,7 +391,7 @@ One important reminder, as the Honey run as root inside the container.
 $ sudo setfacl -m u:fortihoney:rw data/log/honey/creds.log data/log/nginx/access.log
 > ```
 
-# Reporting Modules
+## Reporting Modules
 
 The Honeypot contains some modules to perform reporting of the information gathered.
 
@@ -404,7 +404,7 @@ $ . .venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-### Reporting to VT/OTX
+#### Reporting to VT/OTX
 
 When reporting to VT/OTX, the datetime of the last successful report is saved to prevent reporting again the same IP addresses.
 
@@ -471,7 +471,7 @@ ExecStart=-/home/peter/Fortigate.VPN-SSL.Honeypot/report_to_vt/.venv/bin/python3
 ExecStart=-/home/peter/Fortigate.VPN-SSL.Honeypot/report_to_vt/.venv/bin/python3 report_to_vt/report_to_vt.py -c report_to_vt/vt_config/report_to_vt_bad_ips.symlink.yaml
 ```
 
-### Reporting to Email
+#### Reporting to Email
 
 When reporting to email, the threshold of data to include in the report is selected by the --hours parameter, by default the last 24h of Honeypot data is used.
 
@@ -504,7 +504,7 @@ It will produce an email with the following information.
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174810.png){:target="_blank"}
 
-# Counter-Intelligence (Deliberately Exfiltrate Credentials)
+## Counter-Intelligence (Deliberately Exfiltrate Credentials)
 
 The honeypot isn’t just for telemetry—it actively **hunts for leaked or deliberately planted passwords** you care about.
 
@@ -532,7 +532,7 @@ Ideas to exfiltrate credentials
 For example, I exfiltrated fake credentials in a Pastebin post and some days after an attempt was performed using them.
 
 [![](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png)](../../assets/img/fortigate-vpn-ssl-honeypot/Pasted image 20250731174924.png){:target="_blank"}
-# Symlink Exploit Detections
+## Symlink Exploit Detections
 
 The Honeypot also detects attempt to use the Symlink persistence method in FortiGate units ([https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).](https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity).)
 

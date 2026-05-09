@@ -10,9 +10,9 @@ label: "Share"
 
 platforms:
   -
-    type: Twitter
-    icon: "fab fa-twitter"
-    link: "https://twitter.com/intent/tweet?text=TITLE&url=URL"
+    type: X
+    icon: "fa-brands fa-x-twitter"
+    link: "https://x.com/intent/tweet?text=TITLE&url=URL"
   -
     type: Facebook
     icon: "fab fa-facebook-square"
@@ -23,10 +23,10 @@ platforms:
     link: "https://telegram.me/share?text=TITLE&url=URL"
 
   # Uncomment below if you need to.
-  # -
-  #   type: Linkedin
-  #   icon: "fab fa-linkedin"
-  #   link: "https://www.linkedin.com/sharing/share-offsite/?url=URL"
+  -
+    type: Linkedin
+    icon: "fab fa-linkedin"
+    link: "https://www.linkedin.com/sharing/share-offsite/?url=URL"
   #
   # -
   #   type: Weibo

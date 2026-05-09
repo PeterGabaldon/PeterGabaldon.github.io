@@ -1,31 +1,53 @@
-<!--
-  Navigation buttons at the bottom of the post.
+<!-- Navigation buttons at the bottom of the post. -->
 
-  v2.1
-  https://github.com/cotes2020/jekyll-theme-chirpy
-  © 2020 Cotes Chung
-  MIT License
--->
+{% assign lang_posts = site.posts | where: "lang", page.lang %}
+{% assign current_index = 0 %}
+{% for post in lang_posts %}
+  {% if post.url == page.url %}
+    {% assign current_index = forloop.index0 %}
+    {% break %}
+  {% endif %}
+{% endfor %}
 
-<div class="post-navigation d-flex justify-content-between">
-  {% if page.previous.url and page.previous.lang == page.lang %}
-  <a href="{{ site.baseurl }}{{ page.previous.url }}" class="btn btn-outline-primary">
-    <p>{{ page.previous.title }}</p>
-  </a>
+{% assign prev_index = current_index | plus: 1 %}
+{% assign next_index = current_index | minus: 1 %}
+
+{% assign prev_post = lang_posts[prev_index] %}
+{% if next_index >= 0 %}
+  {% assign next_post = lang_posts[next_index] %}
+{% else %}
+  {% assign next_post = nil %}
+{% endif %}
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  {% assign previous = site.data.locales[include.lang].post.button.previous %}
+  {% assign next = site.data.locales[include.lang].post.button.next %}
+
+  {% if prev_post %}
+    <a
+      href="{{ site.baseurl }}{{ prev_post.url }}"
+      class="btn btn-outline-primary"
+      aria-label="{{ previous }}"
+    >
+      <p>{{ prev_post.title }}</p>
+    </a>
   {% else %}
-  <span class="btn btn-outline-primary disabled">
-    <p>-</p>
-  </span>
+    <div class="btn btn-outline-primary disabled" aria-label="{{ previous }}">
+      <p>-</p>
+    </div>
   {% endif %}
 
-  {% if page.next.url and page.next.lang == page.lang %}
-  <a href="{{ site.baseurl }}{{page.next.url}}" class="btn btn-outline-primary">
-    <p>{{ page.next.title }}</p>
-  </a>
+  {% if next_post %}
+    <a
+      href="{{ site.baseurl }}{{next_post.url}}"
+      class="btn btn-outline-primary"
+      aria-label="{{ next }}"
+    >
+      <p>{{ next_post.title }}</p>
+    </a>
   {% else %}
-  <span class="btn btn-outline-primary disabled">
-    <p>-</p>
-  </span>
+    <div class="btn btn-outline-primary disabled" aria-label="{{ next }}">
+      <p>-</p>
+    </div>
   {% endif %}
-
-</div>
+</nav>

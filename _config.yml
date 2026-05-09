@@ -7,6 +7,8 @@
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # --------------------------
+theme: jekyll-theme-chirpy
+
 title: Peter Gabaldon                          # the main title
 
 tagline: Cybersecurity blog.  # it will display as the sub-title
@@ -32,9 +34,11 @@ social:
   email:                                # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/PeterGabaldon      # change to your twitter homepage
+    - https://x.com/PeterGabaldon      # change to your twitter homepage
     - https://github.com/PeterGabaldon       # change to your github homepage
     - https://www.linkedin.com/in/pedro-gabaldon-julia/
+    - https://bazaar.abuse.ch/user/8188/
+    - https://www.exploit-db.com/?author=12128
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
 

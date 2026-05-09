@@ -9,7 +9,7 @@ tags: [windows, cybersecurity, CVE-2024-7479, CVE-2024-7481, ZDI-24-1289, ZDI-24
 
 ---
 
-# Finding TeamViewer 0days. Part 1: The story begins
+## Finding TeamViewer 0days. Part 1: The story begins
 
 This series of blog posts are about some findings related to TeamViewer (TV) IPC communication with its SYSTEM service. I was trying to find some vulnerabilities in TeamViewer client and ended up researching how the communication with its helper service works. After being able to *spoof* (just some simple authentication as we will see) a valid TeamViewer client when connecting to the SYSTEM service IPC, it was possible to trigger an arbitrary driver installation. TeamViewer was not verifying the signature of the driver being installed. They passed the arbitrary *inf* to *UpdateDriverForPlugAndPlayDevices*.
 
@@ -18,7 +18,7 @@ Thus a privilege escalation USER to KERNEL was possible thanks to TeamViewer.
 As we will see, one of the best approaches is to use the well-known technique *BYOD, Bring Your Own Vulnerable Driver* to load a valid signed driver into Windows Kernel and then exploit it in order to perform privileged actions from user level, like changing the token of an arbitrary process with a privileged one.
 
 [![](../../assets/img/finding-tv-0days-1/logo.webp)](../../assets/img/finding-tv-0days-1/logo.webp){:target="_blank"}
-## Background
+### Background
 
 First of all, some background in order to understand some later things. This vulnerability is not exploitable when TeamViewer is just run on the system, it is necessary to install TeamViewer.
 
@@ -47,7 +47,7 @@ So, the question is, how is that implemented :)? And the journey researching sta
 
 [![](../../assets/img/finding-tv-0days-1/Pasted image 20240617222935.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617222935.png){:target="_blank"}
 
-## First Steps
+### First Steps
 
 At my first try, I was running TV with an administrator user, although with Medium Integrity Level.
 
@@ -107,7 +107,7 @@ Here is another view from Wireshark.
 [![](../../assets/img/finding-tv-0days-1/Pasted image 20240617231517.png)](../../assets/img/finding-tv-0days-1/Pasted image 20240617231517.png){:target="_blank"}
 
 (Not just the INF parameter is send, but I am skipping the other part as the most relevant one is the INF parameter. Notice the Event message *Local\\DriverInstallFinishEvent*).
-## IPC Communication Protocol
+### IPC Communication Protocol
 
 This part is the consequence of all the reversing and research of the TV adventure. Chronologically it should be placed the last one, but I think the next sections will be understood better if we first study the IPC communication protocol.
 
@@ -125,7 +125,7 @@ We then have the body with the data of the message at issue.
 
 Finally we have a tail that contains always the same signature plus some identifier.
 
-## HEADER
+### HEADER
 
 The header is 8-bytes long, but I will consider it as 16-bytes long because after that comes another sub header of another 8 bytes before the body. So, to our understanding, we have 16-byte header before the body. It contains the following fields, where *IDK* means *I don't kwon*.
 
@@ -137,10 +137,10 @@ The header is 8-bytes long, but I will consider it as 16-bytes long because afte
 
 I have always see the header having 8-bytes, so the first byte of the message is always 0x08.
 
-## BODY
+### BODY
 
 What to say? This part contains the non-encrypted data. Like the *INF* parameter :).
-## TAIL
+### TAIL
 
 I have found that the last part of the IPC message may vary, but it always start with *0xfe 0x01 0x00 0x00*
 
@@ -149,7 +149,7 @@ I have not investigate in depth this part, I have always maintain the same bytes
 The last 4-bytes appears to be an identifier. 
 
 Here are the exact messages most relevant for this research.
-### Authentication Messages
+#### Authentication Messages
 
 I will get into more detail about the authentication process in the dedicated part about it (Part 2). This subsection will describe the message itself.
 
@@ -207,7 +207,7 @@ In this case, we have mostly the same, but in this case the message is larger be
 	- `4b 85 07 8b 3f 21 76 0d a5 fa 62 9b a7 5e d1 4a`
 - At the end we have the tail. I dot not know exactly what indicates this bytes, but it is always the same.
 	- `fe 01 00 00 00 01`
-### Control IPC Message
+#### Control IPC Message
 
 Once the authentication has completed successfully the client sent to the server a message that contains the PID of process connecting and a identifier and the version, that need to Mach with the TeamViewer Service version. There is more data but I have not researched about it and appeared to not be relevant, so I just maintain the same bytes when connecting from the exploit.
 
@@ -251,7 +251,7 @@ Again, we start with a similar header.
 - At the end there it is a generated identifier that is used in later messages.
 	- `8c 83 14 3b`
 - I have also see that the language is indicate in this message. In this case *en*. 
-### Driver Install Request Message
+#### Driver Install Request Message
 
 Once we have authenticated and we have send the *Control IPC message* with the correct PID we are able to send the *Driver Install Message*. YUP! :).
 
@@ -292,7 +292,7 @@ Here is an example message.
 - After that, there is the *--inf* parameter string.
 - There comes some other parameters and the end.
 - In this case the tail is a bit different because it contains the following bytes after the common one, `ff 04 00 00 00 95 d4 04 31`.
-## First Fail: Authentication needed
+### First Fail: Authentication needed
 
 My first try was to just send the Driver installation request. Short story, it does not work.
 
@@ -309,7 +309,7 @@ When sending a well formatted message TV started to log *invalid response* from 
 ```
 
 So, we have to correctly authenticate first. As we will see, the authentication algorithm is not robust.
-## Second Fail: Failing back to reversing
+### Second Fail: Failing back to reversing
 
 Before starting reversing I tried if it was possible to take a shortest path. I tried to figure if there where some way of making TV showing why the authentication was failing.
 

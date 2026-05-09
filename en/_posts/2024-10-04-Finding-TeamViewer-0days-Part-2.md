@@ -9,7 +9,7 @@ tags: [windows, cybersecurity, CVE-2024-7479, CVE-2024-7481, ZDI-24-1289, ZDI-24
 
 ---
 
-# Finding TeamViewer 0days. Part 2: Reversing the Authentication Protocol
+## Finding TeamViewer 0days. Part 2: Reversing the Authentication Protocol
 
 I started reversing the client in order to find how the authentication was being made. I will skip this whole part as I finally ended understanding the authentication method revering the service.
 
@@ -24,7 +24,7 @@ Summarizing the process:
 - The client should validate the challenge to detect that is no connecting to a rogue TV service. In our case we can omit this part, we only care about authenticating correctly to the service.
 - The client calculates the response based on the server challenge and send it in a new message.
 
-## Where To Start?
+### Where To Start?
 
 When starting to reverse the client I thought that we had a very nice clue. We known that TeamViewer logs:
 - `2024/05/26 19:03:04.770  3268       3660 S0!! InterProcessNetwork::Received_IPCAuth() invalid response`
@@ -37,7 +37,7 @@ Pulling back we can reach where the final compare is being made, checking if the
 
 [![](../../assets/img/finding-tv-0days-2/Pasted image 20240619223033.png)](../../assets/img/finding-tv-0days-2/Pasted image 20240619223033.png){:target="_blank"}
 
-## Following the process
+### Following the process
 
 When studying the process, the following function was the responsible for returning the expected output.
 
