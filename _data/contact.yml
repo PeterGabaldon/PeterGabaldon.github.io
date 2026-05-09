@@ -37,6 +37,10 @@
   type: exploit-db
   icon: 'fas fa-bomb'
   url: 'https://www.exploit-db.com/?author=12128'
+-
+  type: offsec
+  icon: 'fas fa-certificate'
+  url: 'https://credentials.offsec.com/profile/pedrogabaldonjulia357267/wallet'
 # -
 #   type: stack-overflow
 #   icon: 'fab fa-stack-overflow'
