@@ -41,6 +41,14 @@
   type: offsec
   icon: 'fas fa-certificate'
   url: 'https://credentials.offsec.com/profile/pedrogabaldonjulia357267/wallet'
+-
+  type: buy-me-a-coffee
+  icon: 'fas fa-coffee'
+  url: 'https://buymeacoffee.com/petergabaldon'
+-
+  type: github-sponsor
+  icon: 'fas fa-heart'
+  url: 'https://github.com/sponsors/PeterGabaldon'
 # -
 #   type: stack-overflow
 #   icon: 'fab fa-stack-overflow'
